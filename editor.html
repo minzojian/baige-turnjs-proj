@@ -40,23 +40,25 @@
     <script type="text/javascript" src="./js/common.js"></script>
     <script type="text/javascript" src="./extras/jquery.min.1.7.js"></script>
     <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="./lib/Matrix.js"></script>
-    <script type="text/javascript" src="./lib/jquery.freetrans.js"></script>
-    <script type="text/javascript" src="./lib/uuidv4.min.js"></script>
+    <script type="text/javascript" src="./libs/Matrix.js"></script>
+    <script type="text/javascript" src="./libs/jquery.freetrans.js"></script>
+    <script type="text/javascript" src="./libs/uuidv4.min.js"></script>
     <!-- <script src="lib/jquery.iframe-transport.js"></script> -->
 
     <!-- <script src="./js/jquery-ui-touch.min.js"></script> -->
     <script type="text/javascript" src="./extras/modernizr.2.5.3.min.js"></script>
 
 
-    <script type="text/javascript" src="./lib/jquery.fileupload.js"></script>
-    <script type="text/javascript" src="./lib/jquery.fileupload-process.js"></script>
-    <script type="text/javascript" src="./lib/jquery.fileupload-validate.js"></script>
+    <script type="text/javascript" src="./libs/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="./libs/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="./libs/jquery.fileupload-validate.js"></script>
 
     <link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
     <link rel="stylesheet" type="text/css" href="./css/jquery.freetrans.css" />
     <link rel="stylesheet" type="text/css" href="./css/template.css" />
+    <link rel="stylesheet" type="text/css" href="./css/basic.css" />
+    <link rel="stylesheet" type="text/css" href="./css/editor.css" />
     <style type="text/css">
       @media screen {
         .pc {
@@ -975,7 +977,7 @@ $(`input.size_info`).on('input', updateEmbedCode);
     var docHeight = 1330;
     var padding = IsPC() ? 100 : 10;
     var paddingV = 100;
-
+    var pageUrl="";
     var pageSize = 6;
     var pageNo = 1;
     var bookId = 0;

@@ -1,0 +1,260 @@
+
+.editor-page.flipbook-header {
+  top: unset;
+  bottom: 0px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .ft-controls.ft-controls {
+  pointer-events: none;
+} */
+.ft-container.ft-container {
+  position: static !important;
+  cursor: move;
+}
+.ft-container .ft-scaler
+{
+  cursor: pointer;
+}
+
+.ft-container .doc-clip
+{
+  cursor: inherit;;
+}
+
+
+.add-clip-header {
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(238, 238, 238, 0.3);
+  /* padding: 10px; */
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 45px;
+  box-sizing: border-box;
+  font-size: 1.2rem;
+  vertical-align: middle;
+  color: #333;
+  border-bottom: 1px solid black;
+}
+
+#embedCodePopup {
+  display: none;
+  flex-flow: column;
+  align-items: flex-start;
+}
+
+#embedCodePopup .editor-inside-panel {
+  height: 38px;
+}
+
+#embedCodePopup .setting-icon {
+  position: absolute;
+  transition: transform 0.3s;
+  transform: rotate(-90deg);
+}
+[name="setting-icon-switch"]:checked ~ .setting-icon {
+  transform: rotate(0deg) !important;
+}
+#embedCodePopup .form-item button {
+  flex: unset;
+}
+#embedCodePopup .embedCode-tabs {
+  width: 100%;
+}
+
+#embedCodePopup .size_info_setting > *:not(:last-child) {
+  margin-right: 8px;
+}
+
+#embedCodePopup .form-item input {
+  width: 100%;
+  margin-right: 8px;
+}
+
+#embedCodePopup #interactiveMode {
+  width: 200px;
+}
+#embedCodePopup #coverMode {
+  width: 200px;
+}
+#embedCodePopup #coverMode .form-item label {
+  display: flex;
+  align-items: center;
+}
+
+#embedCodePopup #coverMode .form-item input {
+  width: unset;
+}
+
+#embedCodePopup .preview_content {
+  padding: 16px;
+  width: 100%;
+  height: 240px;
+  background: #666;
+}
+
+#passwordPopup .content > input {
+  width: 100px;
+}
+#passwordPopup .content,
+#uploadPopup .content,
+#videoUploadPopup .content {
+  align-items: center;
+}
+
+.uploadPopup .content .upload_row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.uploadPopup .content .file {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(to right, lightgreen 50%, transparent 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: all 1s ease;
+  margin-right: 8px;
+}
+.uploadPopup .content .file::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  content: "";
+  border-bottom: 2px solid grey;
+}
+.uploadPopup .content .file.done {
+  background: lightgreen;
+}
+
+.editor-panel {
+  /* padding: 0 4px; */
+  background-color: transparent;
+  border-left: 1px black solid;
+  width: 250px;
+  overflow: auto;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.editor-panel > * {
+  width: 100%;
+}
+
+.editor-panel .action-header {
+  height: 45px;
+  padding: 0 4px;
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+.editor-panel .action-header > *:not(:last-child) {
+  margin-right: 8px;
+}
+.editor-panel .action-content {
+  display: flex;
+  flex-flow: column;
+  padding: 0 4px;
+}
+
+#videoClipPopup {
+  padding: 0;
+}
+#videoClipPopup video {
+  width: 100%;
+  height: 100%;
+}
+
+.editor-tabs {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  border: none !important;
+}
+.editor-inside-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+}
+.ui-tabs .ui-tabs-panel.ui-tabs-panel {
+  padding: 4px;
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  flex: 1;
+  border: none;
+}
+.ui-tabs .ui-tabs-nav.ui-widget-header {
+  background: none;
+  border: none;
+  border-bottom: 1px solid black;
+  border-radius: 0;
+}
+.ui-dialog .ui-dialog-titlebar {
+  border-radius: 0 !important;
+}
+
+.clip-container {
+  z-index: 1;
+}
+.doc-clip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  cursor: pointer;
+}
+.doc-clip.selected {
+  /* border: 4px white solid;
+  border: calc(1 / var(--zoom) * 2px) white solid;
+  box-shadow: rgba(0, 0, 4px, 4px, 0.8);
+  box-sizing: border-box; */
+}
+.doc-clip > * {
+  pointer-events: none;
+}
+.doc-clip.selected > * {
+  pointer-events: auto;
+}
+.doc-clip .edit-icon,
+.doc-clip .action-bt {
+  font-size: 32px;
+  font-size: calc(1 / var(--zoom) * 24px);
+  opacity: 1;
+  transition: opacity 0.3s;
+  color: white;
+  text-shadow: 0 0 4px black;
+  pointer-events: auto;
+}
+.doc-clip.normal-clip .action-bt {
+  opacity: 0;
+}
+.doc-clip:hover .action-bt {
+  opacity: 1;
+}
+
+.action-header button,
+.add-clip-header button {
+  margin: 4px 8px;
+  padding: 4px 8px;
+  background-color: #f6f6f6;
+  border: 1px solid;
+}
+
+
+.action-header button:hover,
+.add-clip-header button:hover {
+  background-color: #f0f0f0;
+}
+
+
