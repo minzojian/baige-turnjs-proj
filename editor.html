@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7]>
+<html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]>
+<html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!--<![endif]-->
+
+    <link href="./css/jquery-ui.min.css?v=20130801" rel="stylesheet" />
+    <link href="./css/pdf2htmlEX.base.min.css?v=20130801" rel="stylesheet" />
+    <link href="./css/pdf2htmlEX.fancy.min.css?v=20130801" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/3.css" />
+    <link type="text/css" rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/2.css" />
+    <link type="text/css" rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/1.css" />
+    <!-- <link
+      href="http://doc.baige.me/css/page.css?v=20180209-10"
+      rel="stylesheet"
+    /> -->
+
+    <!-- <script>
+      pdf2htmlEX.defaultViewer = new pdf2htmlEX.Viewer({
+        container_id: "page-container",
+        sidebar_id: "sidebar",
+        outline_id: "outline",
+        loading_indicator_cls: "loading-indicator",
+      });
+    </script> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <script type="text/javascript" src="./js/common.js"></script>
+    <script type="text/javascript" src="./extras/jquery.min.1.7.js"></script>
+    <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="./lib/Matrix.js"></script>
+    <script type="text/javascript" src="./lib/jquery.freetrans.js"></script>
+    <script type="text/javascript" src="./lib/uuidv4.min.js"></script>
+    <!-- <script src="lib/jquery.iframe-transport.js"></script> -->
+
+    <!-- <script src="./js/jquery-ui-touch.min.js"></script> -->
+    <script type="text/javascript" src="./extras/modernizr.2.5.3.min.js"></script>
+
+
+    <script type="text/javascript" src="./lib/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="./lib/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="./lib/jquery.fileupload-validate.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./css/jquery.freetrans.css" />
+    <link rel="stylesheet" type="text/css" href="./css/template.css" />
+    <style type="text/css">
+      @media screen {
+        .pc {
+          display: block;
+        }
+      }
+
+      .actGotop-shares {
+        border: 1px solid #c3e9ff;
+        border-radius: 5px;
+        position: fixed;
+        bottom: 50%;
+        margin-bottom: -206px;
+        right: 20px;
+        width: auto;
+        z-index: 99;
+      }
+
+      .previewImg {
+        width: 10%;
+        height: 30%;
+        display: inline;
+        margin: 10px 10px 10px 10px;
+      }
+
+      .previewDiv {
+        display: inline;
+      }
+
+      .barButton {
+        cursor: pointer;
+        top: 12px;
+        left: 5px;
+        opacity: 1;
+      }
+    </style>
+  </head>
+
+<body class="editor-page">
+
+
+
+
+  <div class="main-container">
+
+
+
+
+
+    <div id="maindiv">
+
+
+
+      <div class="notmobile flipbook-background-page-turner"
+        style="display: flex;position: absolute;left:0;top:0;width: 100%;height: 100%;">
+        <div class="page-up" style="width: 50%;height: 100%;" onclick="pageUp()">
+          <div class="centerIcon iconfont icon-back-arrow" title="上一页"></div>
+
+          <div class="bottomIcon iconfont icon-first-arrow" title="第一页"></div>
+        </div>
+        <div class="page-down" style="width: 50%;height: 100%;" onclick="pageDown()">
+          <div class="centerIcon iconfont icon-forward" title="下一页"></div>
+
+          <div class="bottomIcon iconfont icon-last-arrow" title="最后一页" onclick="pageLast(event)"></div>
+        </div>
+      </div>
+
+      <div class="mobile flipbook-background-page-turner"
+        style="display: flex;position: absolute;left:0;top:0;width: 100%;height: 100%;">
+        <div class="page-up" style="width: 50%;height: 100%;" onclick="pageUp()">
+          <div class="centerIcon iconfont icon-back-arrow" title="上一页"></div>
+
+
+        </div>
+        <div class="page-down" style="width: 50%;height: 100%;" onclick="pageDown()">
+          <div class="centerIcon iconfont icon-forward" title="下一页"></div>
+
+
+        </div>
+      </div>
+
+      <div class="editor-page flipbook-header notmobile">
+        <div class="flipbook-title"></div>
+        <div>|</div>
+        <div class="flipbook-pageinfo">页：<input class="flipbook-pageinfo-current"
+            onchange="changePageInputChange(event)" onkeydown="handlePageEnter(event)" /> / <span
+            class="flipbook-pageinfo-total"></span></div>
+      </div>
+      <div class="editor-page  flipbook-header mobile">
+        <div class="flipbook-title"></div>
+      </div>
+
+      <div class="pageEndTips">
+      </div>
+
+      <div class="flipbook-viewport">
+        <div id="container" class="container">
+          <div id="page-container" class="flipbook" style="position: relative; background: none;">
+          </div>
+        </div>
+      </div>
+
+
+      <div class="add-clip-header">
+        <button onclick="addVideoClip(event)">添加视频</button>
+        <button onclick="addLinkClip(event)">添加链接</button>
+        <button onclick="showEmbedCodePop(event)">显示嵌套代码</button>
+        <button class="preview-mode-bt" onclick="togglePreviewMode(event)">进入预览模式</button>
+        <input hidden id="fileupload" type="file" name="file"  >
+        <button onclick="startUploadFile(event)">上传文档</button>
+      </div>
+
+    </div>
+
+
+    <div id="addVideoUrlPop" class="normal-form-popup" style="display: none;">
+      <div class="content">
+      <div>请输入百鸽视频链接</div>
+      <input id="needCheckVideoUrl" required maxlength="300" value="" placeholder="输入百鸽视频地址" />
+      <div>
+        <button onclick="addVideoCheck(event)">确定</button>
+        <span class="notice">处理中...</span>
+      </div>
+    </div>
+    </div>
+
+    <div class="editor-panel">
+
+      <div id="addClipTips" class="action-header ">
+        请先选择一种贴片模式
+      </div>
+
+      <div id="videoClip" class="editor-inside-panel" style="display: none;">
+
+
+        <div class="action-header  ">
+          <button >取消</button>
+          <button onclick="saveClips(event)">保存贴片</button>
+        </div>
+
+        <div class="action-content  ">
+
+
+          <div class="form-item-area">
+
+            <div class="form-item-label">
+              视频链接
+            </div>
+
+            <div class="form-item">
+              <input required id="videoUrl" name="videoUrl" hidden />
+              <span id="videoUrlTxt"></span>
+              <a href="#" onclick="addVideoClip(event,true)" style="margin-left: 4px;">编辑</a>
+            </div>
+          </div>
+
+          <div class="form-item-area">
+
+            <div class="form-item-label">
+              播放模式
+            </div>
+            <div class="form-item">
+              <label for="playMode-pop"><input id="playMode-pop" type="radio" name="playMode" value="0" checked />
+                弹窗播放
+              </label>
+              <label for="playMode-embed"><input id="playMode-embed" type="radio" name="playMode" value="1" />
+                嵌入播放
+              </label>
+            </div>
+            <div class="form-item">
+              <label for="autoPlay"><input id="autoPlay" type="checkbox" name="autoPlay" checked />
+                自动播放
+              </label>
+            </div>
+          </div>
+
+          <div class="form-item-area">
+            <div class="form-item-label">
+              位置与尺寸
+            </div>
+
+            <div class="form-item bound-info">
+              <div>
+                x:<input required name="boundInfo_left" oninput="handleBoundInfoChange(event)" />
+              </div>
+              <div>
+                宽:<input required name="boundInfo_width" oninput="handleBoundInfoChange(event)" />
+              </div>
+              <div>
+                y:<input required name="boundInfo_top" oninput="handleBoundInfoChange(event)" />
+              </div>
+              <div>
+                高:<input required name="boundInfo_height" oninput="handleBoundInfoChange(event)" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-item">
+            <button class="danger" onclick="removeClip(event)">删除贴片</button>
+          </div>
+
+
+        </div>
+      </div>
+
+      <div id="linkClip" class="editor-inside-panel" style="display: none;">
+        <div class="action-header   ">
+          <button >取消</button>
+          <button onclick="saveClips(event)">保存贴片</button>
+        </div>
+
+        <div class="action-content  ">
+
+          <div class="form-item-area">
+            <div class="form-item-label">
+              链接到
+            </div>
+            <div class="form-item">
+              <label for="playMode-pop"><input id="linkMode-pop" type="radio" name="linkMode" value="1" checked />
+                网站
+              </label>
+              <label for="playMode-embed"><input id="linkMode-embed" type="radio" name="linkMode" value="0" />
+                站内跳转
+              </label>
+            </div>
+
+
+            <div class="normal-link-mode form-item-label">
+              链接地址
+            </div>
+            <div class="normal-link-mode form-item"><input required id="linkUrl" name="linkUrl" /> </div>
+
+            <div class="page-link-mode form-item-label">
+              跳转页码
+            </div>
+            <div class="page-link-mode form-item"><input required id="jumpPage"" name=" jumpPage" width="40" /><span>/</span><span
+                class="flipbook-pageinfo-total"></span> </div>
+
+          </div>
+
+
+          <div class="form-item-area">
+            <div class="form-item-label">
+              位置与尺寸
+            </div>
+
+            <div class="form-item bound-info">
+              <div>
+                x:<input required name="boundInfo_left" oninput="handleBoundInfoChange(event)" />
+              </div>
+              <div>
+                宽:<input required name="boundInfo_width" oninput="handleBoundInfoChange(event)" />
+              </div>
+              <div>
+                y:<input required name="boundInfo_top" oninput="handleBoundInfoChange(event)" />
+              </div>
+              <div>
+                高:<input required name="boundInfo_height" oninput="handleBoundInfoChange(event)" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-item">
+          <button class="danger" onclick="removeClip(event)">删除贴片</button>
+        </div>
+        </div>
+
+
+      </div>
+
+
+
+      <!-- <div class="editor-tabs action-tabs" style="display: none;">
+        <ul>
+          <li><a href="#addClipsPanel">插入贴片</a></li>
+          <li><a href="#sharePanel">分享密码</a></li>
+          <li><a href="#embedPanel">嵌套代码</a></li>
+        </ul>
+        <div id="addClipsPanel">
+          <div class="editor-tabs clip-tabs">
+            <ul>
+              <li><a href="#videoClip"></span>视频贴片</a></li>
+              <li><a href="#linkClip">链接贴片</a></li>
+            </ul>
+            <div id="videoClip" class="editor-inside-panel">
+              <div class="form-item">
+                <button onclick="addClip('video')">新建视频贴片</button>
+              </div>
+              <hr />
+
+              <div class="form-item-label">
+                提示标题
+              </div>
+              <div class="form-item"><input required id="videoTitle" name="videoTitle" /></div>
+
+              <div class="form-item-label">
+                视频地址
+              </div>
+
+              <div class="form-item"><input required id="videoUrl" name="videoUrl" /> </div>
+              <div class="form-item-label">
+                播放模式
+              </div>
+              <div class="form-item">
+                <label for="playMode-pop"><input id="playMode-pop" type="radio" name="playMode" value="popup" checked />
+                  弹窗播放
+                </label>
+                <label for="playMode-embed"><input id="playMode-embed" type="radio" name="playMode" value="embed" />
+                  嵌入播放
+                </label>
+              </div>
+              <div class="form-item">
+                <label for="autoPlay"><input id="autoPlay" type="checkbox" name="autoPlay" checked />
+                  自动播放
+                </label>
+              </div>
+
+              <div class="form-item">
+                <button onclick="saveClip()">保存贴片</button>
+              </div>
+              <hr />
+              <div class="form-item">
+                <button onclick="removeClip()">删除贴片</button>
+              </div>
+              <hr />
+              <div class="form-item">
+              <button class="preview-mode-bt" onclick="togglePreviewMode()">进入预览模式</button>
+            </div>
+
+            </div>
+            <div id="linkClip" class="editor-inside-panel">
+              <div class="form-item">
+                <button onclick="addClip('link')">新建链接贴片</button>
+              </div>
+              <hr />
+              <div class="form-item-label">
+                提示标题
+              </div>
+              <div class="form-item"><input required id="linkTitle" name="linkTitle" /></div>
+
+              <div class="form-item-label">
+                链接地址
+              </div>
+              <div class="form-item"><input required id="linkUrl" name="linkUrl" /> </div>
+
+              <div class="form-item">
+                <button onclick="saveClip()">保存贴片</button>
+              </div>
+              <hr />
+              <div class="form-item">
+                <button onclick="removeClip()">删除贴片</button>
+              </div>
+              <hr />
+              <div class="form-item">
+                <button class="preview-mode-bt" onclick="togglePreviewMode()">进入预览模式</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div id="sharePanel" class="editor-inside-panel">
+          <div class="form-item-label">
+            分享密码
+          </div>
+          <div class="form-item"><input required id="sharePwd" name="sharePwd" /></div>
+          <div class="form-item">
+            <button onclick="saveSharePwd()">提交密码</button>
+          </div>
+          <hr />
+          <div class="form-item">
+            <button onclick="removeSharePwd()">移除密码</button>
+          </div>
+        </div>
+        <div id="embedPanel" class="editor-inside-panel">
+
+          <div class="form-item-label">
+            按钮风格
+          </div>
+          <div class="form-item">
+            <label for="embedButtonStyle-icon"><input id="embedButtonStyle-icon" type="radio" name="embedButtonStyle" value="icon" checked />
+              <img src="./baige_doc_215_70.png" style="height: 2.5em;" />
+            </label>
+          </div>
+            <div class="form-item">
+            <label for="embedButtonStyle-title"><input id="embedButtonStyle-title" type="radio" name="embedButtonStyle" value="title" />
+              打开百鸽文档-"文档标题"
+            </label>
+          </div>
+
+          <div class="form-item-label">
+            请将下列代码复制到网页代码中
+          </div>
+          <div class="form-item">
+           <textarea name="embedCode" id="embedCode" readonly rows="15">
+
+           </textarea>
+          </div>
+          <div class="form-item">
+            <button onclick="copyEmbedCode()">复制代码</button>
+          </div>
+
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+
+  <div id="videoClipPopup">
+
+  </div>
+
+
+  <div id="embedCodePopup">
+    <div class="form-item">
+     <textarea name="embedCode" id="embedCode" readonly rows="5">
+     </textarea>
+    </div>
+    <div class="form-item">
+      <div class="leftpart">
+        <span>设置</span><label><input name="setting-icon-switch" type="checkbox" hidden checked onchange="handleSettingIconSwitch(event)" /><span class="setting-icon iconfont icon-arrow-down" /></label></div>
+      <button onclick="copyEmbedCode()">复制代码</button>
+    </div>
+    <div class="form-item">
+      <div class="embedCode-tabs">
+        <ul>
+          <li><a href="#interactiveMode"></span>交互</a></li>
+          <li><a href="#coverMode">封面</a></li>
+        </ul>
+        <div id="interactiveMode" class="editor-inside-panel">
+          <div class="size_info_setting form-item">尺寸：<input class="size_info size_info_w" value="600" /> <span>x</span> <input class="size_info size_info_h" value="480" /> <span>像素</span>     </div>
+        </div>
+        <div id="coverMode" class="editor-inside-panel">
+          <div class="cover_mode_setting form-item">
+            <label for="coverMode-pop"><input id="coverMode-pop" type="radio" name="coverMode" value="popup" checked />
+              弹出框
+            </label>
+            <label for="coverMode-embed"><input id="coverMode-embed" type="radio" name="coverMode" value="blank" />
+              新页
+            </label>
+          </div>
+          
+        </div>
+      </div>
+
+
+    </div>
+    <div class="form-item">
+      <div class="preview_content form-item"></div>
+    </div>
+
+
+  </div>
+
+
+  <div id="passwordPopup" class="normal-form-popup" style="display: none;">
+  <div class="bg"></div>
+  <div class="content">
+    <img class="cover" style="height:60px;object-fit: contain;"  />
+    <input id="passwordInput" required maxlength="50" placeholder="请输入文档密码" />
+    <div>
+      <button onclick="passwordCheck(event)">确定</button>
+      <span class="notice">处理中...</span>
+    </div>
+  </div>
+  </div>
+
+
+  <div id="uploadPopup" class="uploadPopup normal-form-popup" style="display: none;">
+    <div class="content">
+    <h4>上传PDF</h4>
+    <legend></legend>
+    
+    <div style="text-align: center; padding: 10px 0;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="143" height="124" fill="none">
+        <path fill="#1495B3" fill-opacity=".05" fill-rule="evenodd"
+          d="M71.653 120.757c33.207 0 60.128-26.92 60.128-60.128S104.86.501 71.652.501c-33.207 0-60.127 26.92-60.127 60.128s26.92 60.128 60.128 60.128z" clip-rule="evenodd" />
+        <path fill="#B6C5C8" fill-opacity=".4"
+          d="M76.915 24.75l-.489.11.102.453.459-.067-.072-.496zm-61.267 4.12l.092.493.375-.07.033-.38-.5-.043zm1.89 36.71h.5v-.463l-.46-.037-.04.5zm0 .06h-.502v.5h.501v-.5zm81.064-20.004l-.499-.053-.054.508.509.044.044-.499zM77.404 24.641C74.247 10.539 61.654 0 46.599 0v1.002c14.576 0 26.77 10.203 29.827 23.857l.978-.218zM46.599 0C30.09 0 16.54 12.676 15.15 28.828l.999.085C17.493 13.276 30.614 1.003 46.6 1.003V0zM1.002 47.1c0-8.834 6.352-16.186 14.738-17.737l-.183-.985C6.705 30.015 0 37.774 0 47.1h1.002zm16.575 17.98C8.3 64.336 1.002 56.57 1.002 47.1H0c0 9.997 7.703 18.193 17.497 18.98l.08-1zm.461.56v-.06h-1.002v.06h1.002zm1.003-.501h-1.504v1.002h1.504v-1.002zm78.667 0H19.041v1.002h78.667v-1.002zm9.52-9.52a9.52 9.52 0 0 1-9.52 9.52v1.002c5.811 0 10.522-4.711 10.522-10.523h-1.002zm-8.67-9.483a9.52 9.52 0 0 1 8.67 9.482h1.002c0-5.495-4.212-10.006-9.584-10.48l-.088.998zm-.349-2.543c0 .672-.036 1.336-.106 1.99l.997.107c.074-.69.111-1.389.111-2.097H98.21zm-18.54-18.54c10.24 0 18.54 8.3 18.54 18.54h1.002c0-10.793-8.749-19.542-19.541-19.542v1.002zm-2.682.193a18.697 18.697 0 0 1 2.683-.193v-1.002c-.96 0-1.904.07-2.827.203l.144.992z" />
+        <path fill="#fff" stroke="#422456" stroke-width="2"
+          d="M87.267 28.199a3.006 3.006 0 0 1 3.854-1.797l40.357 14.69 9.838 20.27-21.713 59.656a3.005 3.005 0 0 1-3.853 1.797l-52.735-19.194a3.006 3.006 0 0 1-1.797-3.853l26.05-71.57z" />
+        <path fill="#E0E2E7" fill-rule="evenodd" d="M61.967 102.372l27.02-75.28 9.113 2.71-36.133 72.57z" clip-rule="evenodd" />
+        <mask id="a" fill="#fff">
+        <path fill-rule="evenodd" d="M141.392 63.256L123.5 56.744l6.153-16.906" clip-rule="evenodd" /></mask>
+        <path fill="#422456"
+          d="M123.5 56.744l-1.884-.686-.685 1.884 1.883.685.686-1.883zm18.577 4.629l-17.892-6.512-1.371 3.766 17.892 6.512 1.371-3.766zm-16.694-3.944l6.153-16.906-3.766-1.37-6.154 16.905 3.767 1.371z"
+          mask="url(#a)" />
+        <path fill="#F91D0A" fill-rule="evenodd"
+          d="M95.321 77.057a240.265 240.265 0 0 1-4.483 3.932c5.386-.263 10.872.31 15.983 1.16a25.419 25.419 0 0 1-1.34-2.091c-1.821-3.198-2.814-6.722-3.201-10.191a72.706 72.706 0 0 1-6.959 7.19zM93.877 75.5c2.329-2.175 4.966-4.62 7.3-7.19l.921-1.013c.628-6.744 1.46-12.037 3.487-14.918.536-.748 1.681-.904 2.71-.53l.623.238.115.042c1.416.49 1.425 2.528 1.246 3.254-.299 1.208-1.552 2.982-1.552 2.982.289-.795.788-2.069.691-3.36-.115-1.493-.393-2.462-.847-2.765-.313.077-.685.337-1.013.979-.517.878-1.002 2.049-1.225 2.662-.788 2.165-1.404 5.179-1.641 8.43.324-.4.622-.787.882-1.158.407-.585 3.058-4.48 3.058-4.48s-2.353 5.613-3.366 7.202c-.215.335-.437.663-.666.999-.028 4.362.938 8.617 2.684 12.06.687 1.36 1.719 2.629 2.705 3.802 2.868.602 5.445 1.33 7.53 2.116 2.764 1.048 4.653 2.202 5.182 3.318.26.544.25 1.082.105 1.638-.063.213-.343.667-.418.78.084-.139.351-.872-1.619-2.397-1.551-1.203-4.844-2.381-8.942-3.396 3.747 3.9 7.787 6.629 9.438 6.475.405-.043 1.032-.465 1.032-.465s-.66 1.04-.941 1.259c-.34.224-.907.395-1.371.353-2.441-.214-7.729-3.7-11.724-8.429-5.942-1.22-12.695-1.935-18.254-2.108-8 6.8-13.1 9.403-15.539 6.819l-.896-.953c-.353-.418-.194-1.065.094-1.535.969-1.58 4.039-3.375 9.26-4.382.564-.112 3.016-.454 3.016-.454s-2.06.923-2.522 1.083c-4.445 1.567-8.258 4.186-8.694 5.581l-.031.124c3.057.643 9.576-3.705 19.182-12.663z"
+          clip-rule="evenodd" /></svg>
+    </div>
+    <p>您的PDF上传完成后，文件将在后台转换成电子书。同时，您也可进行自定义设置。</p>
+    <div class="upload_row"><span id="progressBar" class="file"></span><span class="progress_val">0%</span></div>
+    <p class="info">上传中...</p>
+    <div>
+      <button class="cancel_bt"  >取消上传</button>
+      <button class="ok_bt" style="display:none;">确定</button>
+    </div>
+    </div>
+    </div>
+
+  <div id="messageBox"></div>
+
+  <!-- 
+    
+  < !-- 添加贴片的弹窗 -- >
+  <div id='addClipsPanel' class="popup">
+    
+  </div>
+
+  < !-- 分享弹窗 -- >
+  <div id='sharePanel' class="popup">
+
+  </div>
+
+  < !-- 嵌套弹窗 -- >
+  <div id="embedPanel" class="popup">
+
+  </div> -->
+  <!-- <div id="upload" class="pop">
+    <h4>上传PDF</h4>
+    <legend></legend>
+    <input id="id_file" onchange="uploadFile();" name="file" type="file" />
+    <div style="text-align: center; padding: 10px 0;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="143" height="124" fill="none">
+        <path fill="#1495B3" fill-opacity=".05" fill-rule="evenodd"
+          d="M71.653 120.757c33.207 0 60.128-26.92 60.128-60.128S104.86.501 71.652.501c-33.207 0-60.127 26.92-60.127 60.128s26.92 60.128 60.128 60.128z" clip-rule="evenodd" />
+        <path fill="#B6C5C8" fill-opacity=".4"
+          d="M76.915 24.75l-.489.11.102.453.459-.067-.072-.496zm-61.267 4.12l.092.493.375-.07.033-.38-.5-.043zm1.89 36.71h.5v-.463l-.46-.037-.04.5zm0 .06h-.502v.5h.501v-.5zm81.064-20.004l-.499-.053-.054.508.509.044.044-.499zM77.404 24.641C74.247 10.539 61.654 0 46.599 0v1.002c14.576 0 26.77 10.203 29.827 23.857l.978-.218zM46.599 0C30.09 0 16.54 12.676 15.15 28.828l.999.085C17.493 13.276 30.614 1.003 46.6 1.003V0zM1.002 47.1c0-8.834 6.352-16.186 14.738-17.737l-.183-.985C6.705 30.015 0 37.774 0 47.1h1.002zm16.575 17.98C8.3 64.336 1.002 56.57 1.002 47.1H0c0 9.997 7.703 18.193 17.497 18.98l.08-1zm.461.56v-.06h-1.002v.06h1.002zm1.003-.501h-1.504v1.002h1.504v-1.002zm78.667 0H19.041v1.002h78.667v-1.002zm9.52-9.52a9.52 9.52 0 0 1-9.52 9.52v1.002c5.811 0 10.522-4.711 10.522-10.523h-1.002zm-8.67-9.483a9.52 9.52 0 0 1 8.67 9.482h1.002c0-5.495-4.212-10.006-9.584-10.48l-.088.998zm-.349-2.543c0 .672-.036 1.336-.106 1.99l.997.107c.074-.69.111-1.389.111-2.097H98.21zm-18.54-18.54c10.24 0 18.54 8.3 18.54 18.54h1.002c0-10.793-8.749-19.542-19.541-19.542v1.002zm-2.682.193a18.697 18.697 0 0 1 2.683-.193v-1.002c-.96 0-1.904.07-2.827.203l.144.992z" />
+        <path fill="#fff" stroke="#422456" stroke-width="2"
+          d="M87.267 28.199a3.006 3.006 0 0 1 3.854-1.797l40.357 14.69 9.838 20.27-21.713 59.656a3.005 3.005 0 0 1-3.853 1.797l-52.735-19.194a3.006 3.006 0 0 1-1.797-3.853l26.05-71.57z" />
+        <path fill="#E0E2E7" fill-rule="evenodd" d="M61.967 102.372l27.02-75.28 9.113 2.71-36.133 72.57z" clip-rule="evenodd" />
+        <mask id="a" fill="#fff">
+        <path fill-rule="evenodd" d="M141.392 63.256L123.5 56.744l6.153-16.906" clip-rule="evenodd" /></mask>
+        <path fill="#422456"
+          d="M123.5 56.744l-1.884-.686-.685 1.884 1.883.685.686-1.883zm18.577 4.629l-17.892-6.512-1.371 3.766 17.892 6.512 1.371-3.766zm-16.694-3.944l6.153-16.906-3.766-1.37-6.154 16.905 3.767 1.371z"
+          mask="url(#a)" />
+        <path fill="#F91D0A" fill-rule="evenodd"
+          d="M95.321 77.057a240.265 240.265 0 0 1-4.483 3.932c5.386-.263 10.872.31 15.983 1.16a25.419 25.419 0 0 1-1.34-2.091c-1.821-3.198-2.814-6.722-3.201-10.191a72.706 72.706 0 0 1-6.959 7.19zM93.877 75.5c2.329-2.175 4.966-4.62 7.3-7.19l.921-1.013c.628-6.744 1.46-12.037 3.487-14.918.536-.748 1.681-.904 2.71-.53l.623.238.115.042c1.416.49 1.425 2.528 1.246 3.254-.299 1.208-1.552 2.982-1.552 2.982.289-.795.788-2.069.691-3.36-.115-1.493-.393-2.462-.847-2.765-.313.077-.685.337-1.013.979-.517.878-1.002 2.049-1.225 2.662-.788 2.165-1.404 5.179-1.641 8.43.324-.4.622-.787.882-1.158.407-.585 3.058-4.48 3.058-4.48s-2.353 5.613-3.366 7.202c-.215.335-.437.663-.666.999-.028 4.362.938 8.617 2.684 12.06.687 1.36 1.719 2.629 2.705 3.802 2.868.602 5.445 1.33 7.53 2.116 2.764 1.048 4.653 2.202 5.182 3.318.26.544.25 1.082.105 1.638-.063.213-.343.667-.418.78.084-.139.351-.872-1.619-2.397-1.551-1.203-4.844-2.381-8.942-3.396 3.747 3.9 7.787 6.629 9.438 6.475.405-.043 1.032-.465 1.032-.465s-.66 1.04-.941 1.259c-.34.224-.907.395-1.371.353-2.441-.214-7.729-3.7-11.724-8.429-5.942-1.22-12.695-1.935-18.254-2.108-8 6.8-13.1 9.403-15.539 6.819l-.896-.953c-.353-.418-.194-1.065.094-1.535.969-1.58 4.039-3.375 9.26-4.382.564-.112 3.016-.454 3.016-.454s-2.06.923-2.522 1.083c-4.445 1.567-8.258 4.186-8.694 5.581l-.031.124c3.057.643 9.576-3.705 19.182-12.663z"
+          clip-rule="evenodd" /></svg>
+    </div>
+    <p>您的PDF上传完成后，文件将在后台转换成电子书。同时，您也可进行自定义设置。</p>
+    <span id="progressBar"></span>
+  
+    <div>
+      <button onclick="hidediv('upload');">取消上传</button>
+    </div>
+  </div> -->
+
+
+  <!-- <div class="pageLoading" style="width: 100%;height: 100%; position: absolute; left:0;top:0;z-index: 99999; display: flex;justify-content: center;align-items: center; background-color: #fefefe;"> -->
+  <table class="pageLoading"
+    style="width: 100%;height: 100%; position: absolute; left:0;top:0;z-index: 99999; background-color: #fefefe;">
+    <tr>
+      <td style=" display: table-cell;
+          vertical-align: middle;
+          text-align: center;
+          width: 240px;
+          height: 180px;">
+        <div class="loading-pic book">
+          <div class="book__page"></div>
+          <div class="book__page"></div>
+          <div class="book__page"></div>
+        </div>
+
+        <!-- <img class="loading-pic" src='./css/pageloading.gif' /> -->
+        <div class="loading-tips" style="display:none;text-align: center;">
+          <div class=" iconfont icon-error" style="margin-bottom: 16px;font-size: 200%;color:rgb(245, 71, 71)"></div>
+          <div>
+            该浏览器无法支持最新的文档阅览体验，建议你下载安装最新的主流浏览器。<br /><br />或<a href='' style="color:blue;">直接下载</a>文档打开
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <div id="preview" style="
+        z-index: 100;
+        position: absolute;
+        margin-top: 0px;
+        width: 100%;
+        height: auto;
+        overflow: auto;
+        display: none;
+      "></div>
+
+  <div id="shareQrCode" style="
+        z-index: 100;
+        background-color: rgba(68, 68, 68, 0.5);
+        position: absolute;
+        bottom: 85px;
+        width: 100%;
+        height: auto;
+        display: none;
+        text-align: center;
+      ">
+    <!-- <div style="text-align: center; height: 251px;">
+        <p>
+          <img
+            src="/page/getQrCode?url=http://localhost:10011/page/detailPage.html"
+            width="250"
+            height="250"
+            alt="二维码加载失败..."
+            style="margin-top: 10px;"
+          />
+        </p>
+        <button onclick='$("#shareQrCode").hide();return false;'>关闭</button>
+      </div>-->
+  </div>
+
+  <div id="contactDiv" style="
+        z-index: 100;
+        background-color: rgba(68, 68, 68, 0.5);
+        color: white;
+        position: absolute;
+        bottom: 45px;
+        width: 100%;
+        height: auto;
+        display: none;
+        text-align: center;
+      ">
+    <div style="text-align: center; height: auto;">
+      <p>联系电话：13060846888</p>
+      <button onclick='$("#contactDiv").hide();return false;'>关闭</button>
+    </div>
+  </div>
+
+
+  <!-- <script>
+      $("#zoom-viewport").click(function () {
+        var style = $("#fbTopBar").attr("style");
+        if (style.indexOf("display:none") == -1) {
+          $("#fbTopBar").attr("style", style + "display:none;");
+        } else {
+          $("#fbTopBar").attr("style", style.replace("display:none;", ""));
+        }
+
+        console.log("style:" + style);
+        console.log("style:" + $("#fbTopBar").attr("style"));
+      });
+    </script> -->
+
+  <script type="text/javascript">
+
+
+
+    $(document).ready(function () {
+      alignCenter("fbTopBar");
+      setfbTopBarMoreMargin();
+
+      //编辑管理相关的逻辑
+      // $(".editor-tabs").tabs();
+      // $(".action-tabs").on("tabsactivate", function (event, ui) {
+      //   handleActionChange($(ui.newPanel).attr('id'))
+      // })
+      // $(".clip-tabs").on("tabsactivate", function (event, ui) {
+      //   handleClipTypeChange($(ui.newPanel).attr('id') == 'videoClip' ? "video" : "link")
+      // });
+      // handleActionChange('addClipsPanel')
+    
+
+    });
+
+
+    
+    // var clips=[]
+
+    
+
+    
+
+
+
+    function handleActionChange(id) {
+      console.log(id);
+      if (id == 'addClipsPanel') {
+        $(".clip-tabs").tabs("option", "active", 0)
+        handleClipTypeChange('video');
+      } else if (id == 'sharePanel') {
+        $(".clip-tabs").tabs("option", "active", 1)
+      } else if (id == 'embedPanel') {
+        $(".clip-tabs").tabs("option", "active", 2)
+      }
+    }
+
+    function handleClipTypeChange(type) {
+      console.log(type);
+    }
+
+    function setfbTopBarMoreMargin() {
+      var obj = $("#fbTopBar");
+      var width = $(document).width();
+      var objWidth = obj.width();
+      var left = objWidth + parseInt((width - objWidth) / 2) - 30;
+
+      $("#fbTopBarMore").css("left", left);
+    }
+
+
+    function preview() {
+      $("#maindiv").hide();
+      $("#preview").show();
+    }
+
+    function maindivShow() {
+      $("#maindiv").show();
+      $("#preview").hide();
+    }
+
+
+    function sharePage() {
+      $("#shareQrCode").show();
+    }
+    function goBookshelf() {
+      window.location.href = "/page/bookshelf.html";
+    }
+    function getImgList(bookId, currentPage, pageSize, callback) {
+      $.ajax({
+        type: "POST",
+        url: "/book/getImgList",
+        data: {
+          bookId: bookId,
+          currentPage: currentPage,
+          pageSize: pageSize,
+        },
+        async: false,
+        success: function (data) {
+          pageResult = data;
+          if (callback) {
+            callback(data);
+          } else {
+            dealResult(data);
+          }
+        },
+        dataType: "json",
+      });
+    }
+
+    function dealResult(data) {
+      var books = data.result;
+      var imgHtml = "";
+      var pageSelectHtml = "";
+      var previewHtml = "";
+      for (var i = 0; i < books.length; i++) {
+        var imageBean = books[i];
+        var pageNo = i + 1;
+        //处理CSS
+        var link = document.createElement("link");
+        link.type = "text/css";
+        link.rel = "stylesheet";
+        link.href =
+          "https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/1.css";
+        document.getElementsByTagName("head")[0].appendChild(link);
+
+        //处理页面DIV
+
+        $.ajax({
+          type: "get",
+          url:
+            "https://	baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/1.html",
+          timeout: 30000,
+          /* pageNo==1?"false":"true", */
+          success: function (resp) {
+            //var dom='<div id="page-container" style="position: relative; background: #555;"><div class="pf-border" page="1"><div class="pf w0 h0" data-page-no="1" id="pf1"><div class="pc pc1 w0 h0"><img class="bi x0 y0 w1 h1" alt="" src="http://baige-1251142715.image.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/bg1.jpg"><div class="t m0 x1 h2 y1 ff1 fs0 fc0 sc0 ls0 ws0">Sheer<span class="_ _0"></span>  </div><div class="t m0 x2 h2 y2 ff1 fs0 fc0 sc0 ls0 ws0">Driving Pleasure</div><div class="t m0 x3 h3 y3 ff2 fs1 fc1 sc0 ls0 ws0">获取<span class="ff3">最新</span>电子版</div></div><div class="pi" data-data="{&quot;ctm&quot;:[1.646295,0.000000,0.000000,1.646295,0.000000,0.000000]}"></div></div></div></div>';
+            //imgHtml += dom;
+          },
+        });
+
+        pageSelectHtml +=
+          "<option value='" + pageNo + "'>" + pageNo + "</option>";
+        pages = books.length;
+        previewHtml +=
+          "<div class='previewDiv'><img pageNo='" +
+          pageNo +
+          "' onclick='goToPageNum(" +
+          pageNo +
+          ");return false;' data-original=\"" +
+          imageBean.imgPath +
+          "\" class='previewImg' src=\"" +
+          imageBean.imgPath +
+          '"><span>' +
+          pageNo +
+          "</span></div>";
+      }
+      totalCount = data.totalCount;
+      $(".flipbook").html(imgHtml);
+      $("#pageSelect").html(pageSelectHtml);
+      $("#preview").html(previewHtml);
+    }
+
+
+    function getBookId() {
+      var uri = window.location.pathname;
+      return uri.substring(uri.indexOf("_") + 1, uri.indexOf("."));
+    }
+
+
+
+
+    
+//start of embed
+
+function handleSettingIconSwitch(e)
+{
+  if($("#embedCodePopup [name=setting-icon-switch]").attr("checked"))
+  {
+    $(".embedCode-tabs").show({effect:"size", to:{height:"auto"}})
+  }else{
+    $(".embedCode-tabs").hide({effect:"size", to:{height:0}})
+  }
+}
+
+
+
+var embedType='interactive';
+var embedOpenType='popup';
+
+function handleEmbedCodeTabChange(id)
+{
+  var content="";
+  if (id == 'interactiveMode') {
+    embedType='interactive';
+    var url=new URL(docUrl);
+    if(url.search)
+      url.search+="&lite";
+    else
+      url.search="?lite";
+
+    content=`<iframe src='${url.href}' style="width:100%;height:100%;" frameborder=0 seamless="seamless"  />`
+  }else{
+    embedType="cover";
+    content=`<img src='${docCover}' style="object-fit: contain;width:100%;height:100%;" frameborder=0 seamless="seamless"  />`
+  }
+
+  $(".preview_content").empty().append(content);
+  updateEmbedCode();
+}
+
+
+function showEmbedCodePop() {
+  $("#embedCodePopup").dialog({
+    modal: true,
+    autoOpen: true,
+    title: "嵌套代码",
+    width: 480,
+    // height: 360,
+    resize: false,
+    position: { my: "center", at: "center center-100", of: "#maindiv" },
+  });
+}
+function updateEmbedCode() {
+  
+  embedOpenType=$("[name=coverMode]:checked").val();
+
+  var embedWidth=$(".size_info_w").val();
+  var embedHeight=$(".size_info_h").val();
+
+  embedWidth=isNaN(embedWidth)||Number(embedWidth)<10?600:Number(embedWidth);
+  embedHeight=isNaN(embedHeight)||Number(embedHeight)<10?600:Number(embedHeight);
+
+
+  var embedCode ="";
+  var titleContent ="";
+  if(embedType=='interactive')
+  {
+    embedCode = `<iframe src='${docUrl}' style="width:${embedWidth}px;height:${embedHeight}px;" frameborder=0 seamless="seamless"  />`;
+  }else{
+    var titleContent = `<img src='${docCover}' />`
+    if(embedOpenType=="popup")
+    {
+      var popid = "pop_" + Math.round(Math.random() * 100000);
+      embedCode = `<a href="#"  onclick="document.querySelector('#${popid}').style.display='block'" title="打开百鸽文档-${docTitle}">${titleContent}</a>
+  <div id="${popid}" style="display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  top: 0;
+  left: 0;">
+  <a href="#" title="关闭" onclick="document.querySelector('#${popid}').style.display='none'" style="top:0;right:0;position:absolute;width:32px;height:32px;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVRYR+2WPQ8BQRRFz/5IGgoaGgoaGgoaGgoaGgoa/qS8ZCd5JnY+NpJHslvuzNx37t2ZN1tg/BTG9WkAmgRSEmgBz5qbNbo2BiACD6AL3DMhOsANaIcMhABccVe3D1wTIXrARc2thIgl4Fw4rSFwjkAMgJOaE0wvBiA6vpsxcKyAGAEHNRZNLQVA9HxXU2DvQUyAnXqXklZWJ/TdzYFtWXAGbFTxUEpv3KkJuEW+y2U5sFKqn9Kp3Da5ACLku9XiOpWkA1MHQIQXgHYt7ySNdVJVNekvAUw/gekmND2Gpo3ItBWbXkY/cR2b/pC4fhX9rQp0v+jaup0wt+N+9TL6WnERahJoEngBVwxCId2AjWYAAAAASUVORK5CYII=" /></a>
+  <iframe src='${docUrl}' style="width:100%;height:100%;" frameborder=0 seamless="seamless"  />
+  </div>`;
+    }else{
+      embedCode=`<a href='${docUrl}' target='_blank'>${titleContent}</a>`;
+    }
+  }
+  
+  $("[name=embedCode]").val(embedCode);
+}
+
+function copyEmbedCode() {
+  var textarea = $("[name=embedCode]").get(0);
+  textarea.focus();
+  textarea.select();
+  try {
+    var flag = document.execCommand("copy"); //执行复制
+  } catch (eo) {
+    var flag = false;
+  }
+  showMessage("复制完成!");
+}
+$(`[name=embedButtonStyle]`).on("change", updateEmbedCode);
+$(`[name=coverMode]`).on("change", updateEmbedCode);
+$(`input.size_info`).on('input', updateEmbedCode);
+
+
+//end of embed
+
+
+    var docId=1;
+    var docTitle = "BMW+Z4跑车";
+    var docCover="http://pic.go007.com/2013/09/20130913/635146679324527500.jpg";
+    var docUrl = "https://bj2em.csb.app/";
+    var docWidth = 980;
+    var docHeight = 1330;
+    var padding = IsPC() ? 100 : 10;
+    var paddingV = 100;
+
+    var pageSize = 6;
+    var pageNo = 1;
+    var bookId = 0;
+    var pageResult = null;
+    var pcFlag = true;
+    var pages = 4;
+
+    var totalCount = 1;
+    var zoomSize = 1;
+
+    //开关是不是编辑模式
+    var isEditorMode = true;
+
+    //是否显示输入密码
+    var needPassword=false;
+
+
+    $("#passwordPopup img").attr("src",docCover)
+
+    $(function () {
+      $("body").addClass(IsPC() ? "notmobile" : "mobile")
+
+
+      $(".embedCode-tabs").tabs({
+        activate: function( event, ui ) {
+          handleEmbedCodeTabChange($(ui.newPanel).attr('id'))
+        }
+      });
+
+      handleEmbedCodeTabChange("interactiveMode");
+
+      updateEmbedCode();
+
+
+
+      initUpload();
+    })
+
+    function startUploadFile()
+    {
+      $("#fileupload").click();
+    }
+
+    var jqXHR;
+    var processData;
+   function initUpload()
+   {
+
+     //文档上传相关
+     $("#fileupload").fileupload({
+       url:"//jquery-file-upload.appspot.com/",
+  dataType: "json",
+  maxFileSize:50000000, 
+  minFileSize:10000,
+  acceptFileTypes: /\.pdf$/,
+        singleFileUploads: false,
+        processalways: function (e, data) {
+          processData = data;
+        },
+        processstop: function (e) {
+        console.log(e);
+  },
+  messages: {
+        maxNumberOfFiles: '超过最大上传文件数',
+        acceptFileTypes: '仅支持pdf格式的文件',
+        maxFileSize: '文件太大了（只能传50MB以内的文档）',
+        minFileSize: '文件太小了（文件至少要10kb）'
+      },
+  add: function(e, data) {   
+    var $this = $(this);
+    data.context =$("#uploadPopup .content");
+    
+    // $("#uploadPopup").empty().append(`<p class="title">${data.files[0].name}</p><div class="upload_row"><p class="file"></p><span class="progress_val">0%</span></div><p class="info">上传中...</p><button class="cancel_bt">取消</button><button class="ok_bt" style="display:none">确定</button>`);
+
+    $("#uploadPopup .content").find(".file").removeClass("done");
+    data.context.find(".file").css("background-position-x",  "100%");
+    data.context.find(".progress_val").text("0%")
+
+    $("#uploadPopup .content").find(".cancel_bt").click(function(){
+      if(jqXHR)
+      try{jqXHR.abort();}catch(e){}
+      $("#uploadPopup").dialog('destroy').hide();
+    });
+    $("#uploadPopup .content").find(".ok_bt").click(function(){
+      $("#uploadPopup").dialog('destroy').hide();
+    })
+    $("#uploadPopup").dialog({classes:{
+      "ui-dialog": "ui-corner-all",
+      "ui-dialog-titlebar": "ui-corner-all noclosePopup",
+    },
+      closeOnEscape: false,
+      modal: true,
+      autoOpen: true,
+      title: "上传PDF",
+      width: 320,
+      resize: false,
+      position: { my: "center", at: "center center-100", of: "body" },
+    });
+
+    data
+          .process(function () {
+            return $this.fileupload('process', data);
+          }).done(function(){
+
+            if(jqXHR)
+      try{jqXHR.abort();}catch(e){}
+    jqXHR =  data.submit();
+
+          }) .fail(function () {
+            if (data.files.error) {
+              data.context.each(function (index) {
+                var error = data.files[index].error;
+                if (error) {
+                  $(this).find('.info').text(error);
+                  $(this).find('.upload_row').hide();
+                }
+              });
+            }
+          });
+    
+    
+  },
+ 
+  progress: function(e, data) {
+    var progress = parseInt((data.loaded / data.total) * 100, 10);
+    data.context.find(".file").css("background-position-x", 100 - progress + "%");
+    data.context.find(".progress_val").text(progress + "%")
+  },
+  done: function(e, data) {
+    data.context.find(".file")
+      .addClass("done");
+      data.context.find(".info").text("上传完成");
+      data.context.find(".cancel_bt").hide();
+      data.context.find(".ok_bt").show();
+      // .find("a")
+      // .prop("href", data.result.files[0].url);
+  }
+});
+
+   }
+
+
+  </script>
+
+  <script src="./js/basic.js"></script>
+</body>
+
+</html>

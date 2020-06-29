@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link href="./css/jquery-ui.min.css?v=20130801" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="./css/basic.css" />
+    <script type="text/javascript" src="./extras/jquery.min.1.7.js"></script>
+    <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="./lib/vod-js-sdk-v6.js"></script>
+</head>
+
+<body>
+    <input hidden id="videoFileUpload" type="file" onchange="selectedFile(event)" />
+    <button onclick="handleOpenFile(event)">上传视频</button>
+
+    <div id="videoUploadPopup" class="uploadPopup normal-form-popup" style="display: none;">
+        <div class="content">
+            <h4>上传视频</h4>
+            <legend></legend>
+
+            <div style="text-align: center; padding: 10px 0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="143" height="124" fill="none">
+                    <path fill="#1495B3" fill-opacity=".05" fill-rule="evenodd"
+                        d="M71.653 120.757c33.207 0 60.128-26.92 60.128-60.128S104.86.501 71.652.501c-33.207 0-60.127 26.92-60.127 60.128s26.92 60.128 60.128 60.128z"
+                        clip-rule="evenodd" />
+                    <path fill="#B6C5C8" fill-opacity=".4"
+                        d="M76.915 24.75l-.489.11.102.453.459-.067-.072-.496zm-61.267 4.12l.092.493.375-.07.033-.38-.5-.043zm1.89 36.71h.5v-.463l-.46-.037-.04.5zm0 .06h-.502v.5h.501v-.5zm81.064-20.004l-.499-.053-.054.508.509.044.044-.499zM77.404 24.641C74.247 10.539 61.654 0 46.599 0v1.002c14.576 0 26.77 10.203 29.827 23.857l.978-.218zM46.599 0C30.09 0 16.54 12.676 15.15 28.828l.999.085C17.493 13.276 30.614 1.003 46.6 1.003V0zM1.002 47.1c0-8.834 6.352-16.186 14.738-17.737l-.183-.985C6.705 30.015 0 37.774 0 47.1h1.002zm16.575 17.98C8.3 64.336 1.002 56.57 1.002 47.1H0c0 9.997 7.703 18.193 17.497 18.98l.08-1zm.461.56v-.06h-1.002v.06h1.002zm1.003-.501h-1.504v1.002h1.504v-1.002zm78.667 0H19.041v1.002h78.667v-1.002zm9.52-9.52a9.52 9.52 0 0 1-9.52 9.52v1.002c5.811 0 10.522-4.711 10.522-10.523h-1.002zm-8.67-9.483a9.52 9.52 0 0 1 8.67 9.482h1.002c0-5.495-4.212-10.006-9.584-10.48l-.088.998zm-.349-2.543c0 .672-.036 1.336-.106 1.99l.997.107c.074-.69.111-1.389.111-2.097H98.21zm-18.54-18.54c10.24 0 18.54 8.3 18.54 18.54h1.002c0-10.793-8.749-19.542-19.541-19.542v1.002zm-2.682.193a18.697 18.697 0 0 1 2.683-.193v-1.002c-.96 0-1.904.07-2.827.203l.144.992z" />
+                    <path fill="#fff" stroke="#422456" stroke-width="2"
+                        d="M87.267 28.199a3.006 3.006 0 0 1 3.854-1.797l40.357 14.69 9.838 20.27-21.713 59.656a3.005 3.005 0 0 1-3.853 1.797l-52.735-19.194a3.006 3.006 0 0 1-1.797-3.853l26.05-71.57z" />
+                    <path fill="#E0E2E7" fill-rule="evenodd" d="M61.967 102.372l27.02-75.28 9.113 2.71-36.133 72.57z"
+                        clip-rule="evenodd" />
+                    <mask id="a" fill="#fff">
+                        <path fill-rule="evenodd" d="M141.392 63.256L123.5 56.744l6.153-16.906" clip-rule="evenodd" />
+                    </mask>
+                    <path fill="#422456"
+                        d="M123.5 56.744l-1.884-.686-.685 1.884 1.883.685.686-1.883zm18.577 4.629l-17.892-6.512-1.371 3.766 17.892 6.512 1.371-3.766zm-16.694-3.944l6.153-16.906-3.766-1.37-6.154 16.905 3.767 1.371z"
+                        mask="url(#a)" />
+                    <path fill="#F91D0A" fill-rule="evenodd"
+                        d="M95.321 77.057a240.265 240.265 0 0 1-4.483 3.932c5.386-.263 10.872.31 15.983 1.16a25.419 25.419 0 0 1-1.34-2.091c-1.821-3.198-2.814-6.722-3.201-10.191a72.706 72.706 0 0 1-6.959 7.19zM93.877 75.5c2.329-2.175 4.966-4.62 7.3-7.19l.921-1.013c.628-6.744 1.46-12.037 3.487-14.918.536-.748 1.681-.904 2.71-.53l.623.238.115.042c1.416.49 1.425 2.528 1.246 3.254-.299 1.208-1.552 2.982-1.552 2.982.289-.795.788-2.069.691-3.36-.115-1.493-.393-2.462-.847-2.765-.313.077-.685.337-1.013.979-.517.878-1.002 2.049-1.225 2.662-.788 2.165-1.404 5.179-1.641 8.43.324-.4.622-.787.882-1.158.407-.585 3.058-4.48 3.058-4.48s-2.353 5.613-3.366 7.202c-.215.335-.437.663-.666.999-.028 4.362.938 8.617 2.684 12.06.687 1.36 1.719 2.629 2.705 3.802 2.868.602 5.445 1.33 7.53 2.116 2.764 1.048 4.653 2.202 5.182 3.318.26.544.25 1.082.105 1.638-.063.213-.343.667-.418.78.084-.139.351-.872-1.619-2.397-1.551-1.203-4.844-2.381-8.942-3.396 3.747 3.9 7.787 6.629 9.438 6.475.405-.043 1.032-.465 1.032-.465s-.66 1.04-.941 1.259c-.34.224-.907.395-1.371.353-2.441-.214-7.729-3.7-11.724-8.429-5.942-1.22-12.695-1.935-18.254-2.108-8 6.8-13.1 9.403-15.539 6.819l-.896-.953c-.353-.418-.194-1.065.094-1.535.969-1.58 4.039-3.375 9.26-4.382.564-.112 3.016-.454 3.016-.454s-2.06.923-2.522 1.083c-4.445 1.567-8.258 4.186-8.694 5.581l-.031.124c3.057.643 9.576-3.705 19.182-12.663z"
+                        clip-rule="evenodd" />
+                </svg>
+            </div>
+            <p>
+                您的PDF上传完成后，文件将在后台转换成电子书。同时，您也可进行自定义设置。
+            </p>
+            <div class="upload_row">
+                <span id="progressBar" class="file"></span><span class="progress_val">0%</span>
+            </div>
+            <p class="info">上传中...</p>
+            <div>
+                <button class="cancel_bt">取消上传</button>
+                <button class="ok_bt" style="display: none;">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleOpenFile() {
+            $("#videoFileUpload").click();
+        }
+        // 选择好文件
+        function selectedFile($event) {
+            const file = $event.target.files[0];
+            if (file) {
+                // 上传
+                upload(file);
+            }
+        }
+
+        function upload(file) {
+            var popup = $("#videoUploadPopup .content");
+
+            // $("#videoUploadPopup").empty().append(`<p class="title">${data.files[0].name}</p><div class="upload_row"><p class="file"></p><span class="progress_val">0%</span></div><p class="info">上传中...</p><button class="cancel_bt">取消</button><button class="ok_bt" style="display:none">确定</button>`);
+
+            popup.find(".file").removeClass("done");
+            popup.find(".file").css("background-position-x", "100%");
+            popup.find(".progress_val").text("0%");
+
+            popup.find(".cancel_bt").click(function () {
+                $("#videoFileUpload").val(null);
+                $("#videoUploadPopup").dialog("destroy").hide();
+            });
+            popup.find(".ok_bt").click(function () {
+                $("#videoFileUpload").val(null);
+                $("#videoUploadPopup").dialog("destroy").hide();
+            });
+            $("#videoUploadPopup").dialog({
+                classes: {
+                    "ui-dialog": "ui-corner-all",
+                    "ui-dialog-titlebar": "ui-corner-all noclosePopup",
+                },
+                closeOnEscape: false,
+                modal: true,
+                autoOpen: true,
+                title: "上传视频",
+                width: 320,
+                resize: false,
+                position: { my: "center", at: "center center-100", of: "body" },
+            });
+
+            console.log(file);
+            if (!file.type.includes("video")) {
+                data.context.find(".info").text("上传文件必须是视频");
+                data.context.find(".cancel_bt").hide();
+                data.context.find(".ok_bt").show();
+                return;
+            }
+
+            this.start(file);
+        }
+        // 自定义上传
+        function start(file) {
+            var popup = $("#videoUploadPopup .content");
+            try {
+                // 获取签名 （这里必须定义为函数，tcVod才可识别）
+                $.ajax({
+                    url:
+                        "https://service-i8gsnejo-1251577693.gz.apigw.tencentcs.com/test/vod_sign?procedure=test",
+                    method: "get",
+                }).done(function (res) {
+                    console.log(res);
+                    //const getSignature =res.data;
+                    // 前文中所述的获取上传签名的函数
+                    const tcVod = new TcVod.default({
+                        getSignature: function () {
+                            return res;
+                        },
+                    });
+                    // 视频，类型为 File
+                    const uploader = tcVod.upload({ videoFile: file });
+
+                    /*
+                新版本vod-js-sdk-v6@1.4.7 官方文档中监听方法'video_progress'已修改为'media_progress',
+                源码中是两种都支持的，建议用'media_progress'
+                */
+                    // 监听上传进度
+                    uploader.on("video_progress", (info) => {
+                        var progress = parseInt(info.percent * 100);
+                        popup
+                            .find(".file")
+                            .css("background-position-x", 100 - progress + "%");
+                        popup.find(".progress_val").text(progress + "%");
+                    });
+
+                    // 监听上传完成
+
+                    uploader.done().then(function (res) {
+                        console.log(res);
+                        popup.find(".info").text("上传完成");
+                        popup.find(".cancel_bt").hide();
+                        popup.find(".ok_bt").show();
+                    });
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    </script>
+</body>
+
+</html>

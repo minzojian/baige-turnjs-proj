@@ -1,0 +1,165 @@
+body{
+    overflow:auto;
+    text-align:center;
+    background-color:#fcfcfc;
+    margin:0;
+    padding:0;
+}
+.flipbook-viewport{
+    overflow:hidden;
+    width:100%;
+    height:100%;
+}
+.flipbook-viewport .container{
+    margin:0 auto;
+}
+.bookshelf{
+    text-align:center;
+    margin:0 auto;
+}
+
+.bookshelf .book-list{
+    /*background:url(../pics/bookshelf.gif);
+    background-size:100%;*/
+    width:100%;
+    height:100%;
+}
+
+.bookshelf .book-list .row-1{
+    position:relative;
+    width:360px;
+    height:158px;
+    margin-left:33px;
+
+}
+
+.bookshelf .book-list .row-1:after,
+.bookshelf .book-list .row-2:after{
+    background-size:100%;
+    background-repeat: no-repeat;
+    background-position:bottom left;
+    width:426px;
+    height:210px;
+    display:block;
+    content:"";
+    margin-left:-38px;
+}
+
+.bookshelf .book-list .row-2{
+    position:relative;
+    margin-top:20px;
+    height:164px;
+    width:360px;
+    margin-left:33px;
+}
+
+.bookshelf .book-list .row-2:after{
+    height:216px;
+}
+
+.bookshelf .book-list .loc{
+    position:relative;
+    bottom:0;
+    width:100%;
+}
+
+.bookshelf .book-list .loc > div{
+    width:25%;
+    height:100%;
+    float:left;
+    text-align:center;
+    position:relative;
+}
+
+.bookshelf .book-list .loc .img img {
+    width: 80%;
+    height: 20%;
+}
+
+.bookshelf .book-list .phone_loc > div{
+    width:100%;
+    height:100%;
+    text-align: center;
+    margin: 0 auto;
+    position:relative;
+}
+
+.bookshelf .book-list .phone_loc .img img {
+    width:80%;
+    height:80%;
+    text-align: center;
+    margin: 10px;
+    position:relative;
+}
+img {
+    border: 0 none;
+    vertical-align: baseline;
+    object-fit: fill;
+}
+
+.bookshelf .suggestion{
+    font:12px 'District Thin', helvetica, arial;
+    color:#999;
+    text-align:center;
+    line-height:40px;
+}
+
+.bookshelf .sample,
+.bookshelf-row .sample{
+    margin:auto;
+    position: relative;
+    z-index:1;
+
+    -webkit-box-shadow:2px 2px 5px rgba(0,0,0,0.6);
+    -moz-box-shadow:2px 2px 5px rgba(0,0,0,0.6);
+    -ms-box-shadow:2px 2px 5px rgba(0,0,0,0.6);
+    -o-box-shadow:2px 2px 5px rgba(0,0,0,0.6);
+    box-shadow:2px 2px 5px rgba(0,0,0,0.6);
+
+    -webkit-transition:-webkit-transform 0.1s;
+    -webkit-transform:translate(0, 0);
+    -moz-transition:-moz-transform 0.1s;
+    -moz-transform:translate(0, 0);
+    -ms-transition:-ms-transform 0.1s;
+    -ms-transform:translate(0, 0);
+    -o-transition:-o-transform 0.1s;
+    -o-transform:translate(0, 0);
+    transition:transform 0.1s;
+    transform:translate(0, 0);
+}
+
+.sample .loader{
+    position:absolute;
+    width:32px;
+    height:32px;
+    top:50%;
+    left:50%;
+}
+
+.sample .loader i{
+    position:relative;
+    top:-16px;
+    left:-16px;
+    width:32px;
+    height:32px;
+    display:block;
+
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    -ms-border-radius:10px;
+    -o-border-radius:10px;
+    border-radius:10px;
+}
+
+.bookshelf .book-list .hover,
+.bookshelf-row .hover,
+.bookshelf .book-list .loading{
+    z-index:2;
+    cursor:none;
+    background-color:white;
+    -webkit-transform: scale3d(1.1, 1.1, 1) translate3d(0, -5px, 0);
+    -moz-transform: scale3d(1.1, 1.1, 1) translate3d(0, -5px, 0);
+    -ms-transform: scale3d(1.1, 1.1, 1) translate3d(0, -5px, 0);
+    -o-transform: scale3d(1.1, 1.1, 1) translate3d(0, -5px, 0);
+    transform: scale3d(1.1, 1.1, 1) translate3d(0, -5px, 0);
+}

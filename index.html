@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7]>
+<html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]>
+<html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+	<html lang="en">
+		<head>
+				<meta charset="UTF-8">
+  <!--<![endif]-->
+  <head>
+    <link href="./css/jquery-ui.min.css?v=20130801" rel="stylesheet" />
+    <link href="./css/pdf2htmlEX.base.min.css?v=20130801" rel="stylesheet" />
+    <link href="./css/pdf2htmlEX.fancy.min.css?v=20130801" rel="stylesheet" />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/3.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/2.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/1.css"
+    />
+    <!-- <link
+      href="http://doc.baige.me/css/page.css?v=20180209-10"
+      rel="stylesheet"
+    /> -->
+
+    <!-- <script>
+      pdf2htmlEX.defaultViewer = new pdf2htmlEX.Viewer({
+        container_id: "page-container",
+        sidebar_id: "sidebar",
+        outline_id: "outline",
+        loading_indicator_cls: "loading-indicator",
+      });
+    </script> -->
+    <meta name="viewport" 
+  content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <script type="text/javascript" src="./js/common.js"></script>
+    <script type="text/javascript" src="./extras/jquery.min.1.7.js"></script>
+    <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
+    <!-- <script src="./js/jquery-ui-touch.min.js"></script> -->
+    <script
+      type="text/javascript"
+      src="./extras/modernizr.2.5.3.min.js"
+    ></script>
+    <link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./css/template.css" />
+    <style type="text/css">
+      @media screen {
+        .pc {
+          display: block;
+        }
+      }
+
+      .actGotop-shares {
+        border: 1px solid #c3e9ff;
+        border-radius: 5px;
+        position: fixed;
+        bottom: 50%;
+        margin-bottom: -206px;
+        right: 20px;
+        width: auto;
+        z-index: 99;
+      }
+
+      .previewImg {
+        width: 10%;
+        height: 30%;
+        display: inline;
+        margin: 10px 10px 10px 10px;
+      }
+
+      .previewDiv {
+        display: inline;
+      }
+
+      .barButton {
+        cursor: pointer;
+        top: 12px;
+        left: 5px;
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body
+
+  >
+    <div id="sidebar" style="display: none;">
+      <div id="outline"></div>
+    </div>
+    <div
+      id="maindiv"
+      style="
+        z-index: 10;
+        display: block;
+        position: absolute;
+        margin-top: 0px;
+        width: 100%;
+        height: 100%;
+      "
+    >
+    <div class="notmobile flipbook-background-page-turner" style="display: flex;position: absolute;left:0;top:0;width: 100%;height: 100%;">
+      <div class="page-up" style="width: 50%;height: 100%;" onclick="pageUp()">
+        <div class="centerIcon iconfont icon-back-arrow" title="上一页"></div>
+
+        <div class="bottomIcon iconfont icon-first-arrow" title="第一页" ></div>
+      </div>
+      <div class="page-down" style="width: 50%;height: 100%;" onclick="pageDown()">
+        <div class="centerIcon iconfont icon-forward" title="下一页" ></div>
+
+        <div class="bottomIcon iconfont icon-last-arrow" title="最后一页" onclick="pageLast(event)"></div>
+      </div>
+    </div>
+
+    <div class="mobile flipbook-background-page-turner" style="display: flex;position: absolute;left:0;top:0;width: 100%;height: 100%;">
+        <div class="page-up" style="width: 50%;height: 100%;" >
+          <div class="centerIcon iconfont icon-back-arrow"   title="上一页" onclick="pageUp()"></div>
+  
+          
+        </div>
+        <div class="page-down" style="width: 50%;height: 100%;" >
+          <div class="centerIcon iconfont icon-forward"  title="下一页" onclick="pageDown()"></div>
+  
+          
+        </div>
+      </div>
+
+    <div class="flipbook-header notmobile">
+      <div class="flipbook-title"></div> <div>|</div> <div class="flipbook-pageinfo">页：<input class="flipbook-pageinfo-current" onchange="changePageInputChange(event)" onkeydown="handlePageEnter(event)" /> / <span class="flipbook-pageinfo-total"></span></div>
+    </div>
+    <div class="flipbook-header mobile">
+      <div class="flipbook-title"></div>
+    </div>
+
+
+    <div class="mobile flipbook-controls">
+        <span class="iconfont icon-view-thumbs"></span>
+        <div class="flipbook-pageinfo"><span class="flipbook-pageinfo-current-text" ></span> / <span class="flipbook-pageinfo-total"></span></div>
+    </div>  
+
+    <div class="notmobile flipbook-controls">
+      <span class="zoomBt iconfont icon-zoom-in"></span>
+      <span class="fullscreenBt iconfont icon-full-screen"></span>
+      <div class="zoom-panel-wraper">
+      <div class="zoom-panel">
+        <div class="zoom-out iconfont icon-square-minus"></div>
+        <div class="zoom-slider"></div>
+        <div class="zoom-in iconfont icon-square-add"></div>
+      </div>
+    </div>  
+  </div>
+
+  <div class="notmobile flipbook-controls lite">
+    <span class="zoomBt iconfont icon-zoom-in"></span>
+    <div class="zoom-panel-wraper">
+      <div class="zoom-panel">
+        <div class="zoom-out iconfont icon-square-minus"></div>
+        <div class="zoom-slider"></div>
+        <div class="zoom-in iconfont icon-square-add"></div>
+      </div>
+    </div>  
+  </div>
+
+  <div class="pageEndTips">
+  </div>
+
+      <div class="flipbook-viewport">
+        <div id="container" class="container">
+
+            <div
+              id="page-container"
+              class="flipbook page-container"
+              style="position: relative; background: none;"
+            >
+          </div>
+
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+
+
+  <div id="passwordPopup" class="normal-form-popup" style="display: none;">
+    <div class="bg"></div>
+    <div class="content">
+      <img class="cover" style="height:60px;object-fit: contain;"  />
+      <input id="passwordInput" required maxlength="50" placeholder="请输入文档密码" />
+      <div>
+        <button onclick="passwordCheck(event)">确定</button>
+        <span class="notice">处理中...</span>
+      </div>
+    </div>
+    </div>
+  
+    <div id="messageBox"></div>
+
+
+    <!-- <div class="pageLoading" style="width: 100%;height: 100%; position: absolute; left:0;top:0;z-index: 99999; display: flex;justify-content: center;align-items: center; background-color: #fefefe;"> -->
+      <table class="pageLoading"   style="width: 100%;height: 100%; position: absolute; left:0;top:0;z-index: 99999; background-color: #fefefe;">
+        <tr><td style=" display: table-cell;
+          vertical-align: middle;
+          text-align: center;
+          width: 240px;
+          height: 180px;">
+          <div class="loading-pic book">
+              <div class="book__page"></div>
+              <div class="book__page"></div>
+              <div class="book__page"></div>
+            </div>
+            
+        <!-- <img class="loading-pic" src='./css/pageloading.gif' /> -->
+        <div class="loading-tips" style="display:none;text-align: center;">
+          <div class=" iconfont icon-error" style="margin-bottom: 16px;font-size: 200%;color:rgb(245, 71, 71)"></div>
+          <div  >
+            该浏览器无法支持最新的文档阅览体验，建议你下载安装最新的主流浏览器。<br/><br/>或<a href='' style="color:blue;">直接下载</a>文档打开
+          </div>
+      </div>
+    </td></tr>
+    </table>
+
+    <div
+      id="preview"
+      style="
+        z-index: 100;
+        position: absolute;
+        margin-top: 0px;
+        width: 100%;
+        height: auto;
+        overflow: auto;
+        display: none;
+      "
+    ></div>
+
+    <div
+      id="shareQrCode"
+      style="
+        z-index: 100;
+        background-color: rgba(68, 68, 68, 0.5);
+        position: absolute;
+        bottom: 85px;
+        width: 100%;
+        height: auto;
+        display: none;
+        text-align: center;
+      "
+    >
+      <!-- <div style="text-align: center; height: 251px;">
+        <p>
+          <img
+            src="/page/getQrCode?url=http://localhost:10011/page/detailPage.html"
+            width="250"
+            height="250"
+            alt="二维码加载失败..."
+            style="margin-top: 10px;"
+          />
+        </p>
+        <button onclick='$("#shareQrCode").hide();return false;'>关闭</button>
+      </div>-->
+    </div> 
+
+    <div
+      id="contactDiv"
+      style="
+        z-index: 100;
+        background-color: rgba(68, 68, 68, 0.5);
+        color: white;
+        position: absolute;
+        bottom: 45px;
+        width: 100%;
+        height: auto;
+        display: none;
+        text-align: center;
+      "
+    >
+      <div style="text-align: center; height: auto;">
+        <p>联系电话：13060846888</p>
+        <button onclick='$("#contactDiv").hide();return false;'>关闭</button>
+      </div>
+    </div>
+
+    <!-- <script>
+      $("#zoom-viewport").click(function () {
+        var style = $("#fbTopBar").attr("style");
+        if (style.indexOf("display:none") == -1) {
+          $("#fbTopBar").attr("style", style + "display:none;");
+        } else {
+          $("#fbTopBar").attr("style", style.replace("display:none;", ""));
+        }
+
+        console.log("style:" + style);
+        console.log("style:" + $("#fbTopBar").attr("style"));
+      });
+    </script> -->
+
+    <script type="text/javascript">
+      
+      $(document).ready(function () {
+        alignCenter("fbTopBar");
+        setfbTopBarMoreMargin();
+      });
+
+      function setfbTopBarMoreMargin() {
+        var obj = $("#fbTopBar");
+        var width = $(document).width();
+        var objWidth = obj.width();
+        var left = objWidth + parseInt((width - objWidth) / 2) - 30;
+
+        $("#fbTopBarMore").css("left", left);
+      }
+
+      // $(window).resize(function () {
+      //   alignCenter("fbTopBar");
+      //   setfbTopBarMoreMargin();
+
+      //   var w = $(window).width();
+      //   var h = $(window).height();
+      //   $(".container").width(w).height(h);
+      //   $(".flipbook").width(w).height(h);
+      //   $(".flipbook").turn("center");
+      // });
+      function preview() {
+        $("#maindiv").hide();
+        $("#preview").show();
+      }
+
+      function maindivShow() {
+        $("#maindiv").show();
+        $("#preview").hide();
+      }
+
+      // function bookZoom(multiple) {
+      //   zoomSize += multiple;
+      //   if (zoomSize <= 0) {
+      //     zoomSize = 0.1;
+      //   }
+      //   if (zoomSize >= 10) {
+      //     zoomSize = 10;
+      //   }
+      //   $(".flipbook").turn("zoom", zoomSize);
+      //   $(".flipbook").turn("center");
+      // }
+
+      function showMoreBar() {
+        $("#fbTopBarMore").toggle();
+      }
+      function firstPage() {
+        $(".flipbook").turn("page", 1);
+      }
+      function lastPage() {
+        var lastPage = $(".flipbook").turn("pages");
+        $(".flipbook").turn("page", lastPage);
+      }
+      function nextPage() {
+        var currentPage = $(".flipbook").turn("page");
+        var nextPageNo = currentPage + 1;
+        var hasPage = $(".flipbook").turn("hasPage", nextPageNo);
+
+        if (hasPage) {
+          try {
+            console.info("currentPage: " + nextPageNo);
+            $(".flipbook").turn("next");
+          } catch (e) {
+            console.warn(e.message);
+          }
+        }
+      }
+
+      // function dealNextPageData(nextPageNo) {
+      //   var hasNextPage = true;
+      //   var display = $(".flipbook").turn("display");
+      //   // debugger;
+      //   if (display == "double") {
+      //     hasNextPage = $(".flipbook").turn("hasPage", nextPageNo + pageSize);
+      //   } else {
+      //     hasNextPage = $(".flipbook").turn(
+      //       "hasPage",
+      //       nextPageNo + pageSize / 2
+      //     );
+      //   }
+      //   console.info("hasNextPage: " + hasNextPage);
+      //   if (!hasNextPage) {
+      //     //getNextPage();
+      //   }
+      // }
+
+      // function getNextPage() {
+      //   if (pageResult.totalPages > pageResult.currentPage) {
+      //     //说明还有下一页
+      //     pageNo++;
+      //     getImgList(bookId, pageNo, pageSize, function (data) {
+      //       var books = data.result;
+      //       for (var i = 0; i < books.length; i++) {
+      //         var imageBean = books[i];
+      //         var imageNum = imageBean.imageNum;
+      //         var element =
+      //           "<div class='bookImgCls' style=\"background-image:url(" +
+      //           imageBean.imgPath +
+      //           ')"></div>';
+      //         //element = $("<div />").html("Loading...");
+      //         $(".flipbook").turn("addPage", element, imageNum);
+      //       }
+      //     });
+      //   }
+      // }
+
+      function previousPage() {
+        var currentPage = $(".flipbook").turn("page");
+        var previousPageNo = currentPage + 1;
+        var hasPage = $(".flipbook").turn("hasPage", previousPageNo);
+        if (hasPage) {
+          currentPage = previousPageNo;
+          try {
+            $(".flipbook").turn("previous");
+          } catch (e) {
+            //说明页面不存在,加载下一页的img
+            console.warn(e.message);
+          }
+        }
+      }
+      function sharePage() {
+        $("#shareQrCode").show();
+      }
+      function goBookshelf() {
+        window.location.href = "/page/bookshelf.html";
+      }
+      function getImgList(bookId, currentPage, pageSize, callback) {
+        $.ajax({
+          type: "POST",
+          url: "/book/getImgList",
+          data: {
+            bookId: bookId,
+            currentPage: currentPage,
+            pageSize: pageSize,
+          },
+          async: false,
+          success: function (data) {
+            pageResult = data;
+            if (callback) {
+              callback(data);
+            } else {
+              dealResult(data);
+            }
+          },
+          dataType: "json",
+        });
+      }
+
+      function dealResult(data) {
+        var books = data.result;
+        var imgHtml = "";
+        var pageSelectHtml = "";
+        var previewHtml = "";
+        for (var i = 0; i < books.length; i++) {
+          var imageBean = books[i];
+          var pageNo = i + 1;
+          //处理CSS
+          var link = document.createElement("link");
+          link.type = "text/css";
+          link.rel = "stylesheet";
+          link.href =
+            "https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/1.css";
+          document.getElementsByTagName("head")[0].appendChild(link);
+
+          //处理页面DIV
+
+          $.ajax({
+            type: "get",
+            url:
+              "https://	baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/1.html",
+            timeout: 30000,
+            /* pageNo==1?"false":"true", */
+            success: function (resp) {
+              //var dom='<div id="page-container" style="position: relative; background: #555;"><div class="pf-border" page="1"><div class="pf w0 h0" data-page-no="1" id="pf1"><div class="pc pc1 w0 h0"><img class="bi x0 y0 w1 h1" alt="" src="http://baige-1251142715.image.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/bg1.jpg"><div class="t m0 x1 h2 y1 ff1 fs0 fc0 sc0 ls0 ws0">Sheer<span class="_ _0"></span>  </div><div class="t m0 x2 h2 y2 ff1 fs0 fc0 sc0 ls0 ws0">Driving Pleasure</div><div class="t m0 x3 h3 y3 ff2 fs1 fc1 sc0 ls0 ws0">获取<span class="ff3">最新</span>电子版</div></div><div class="pi" data-data="{&quot;ctm&quot;:[1.646295,0.000000,0.000000,1.646295,0.000000,0.000000]}"></div></div></div></div>';
+              //imgHtml += dom;
+            },
+          });
+
+          pageSelectHtml +=
+            "<option value='" + pageNo + "'>" + pageNo + "</option>";
+          pages = books.length;
+          previewHtml +=
+            "<div class='previewDiv'><img pageNo='" +
+            pageNo +
+            "' onclick='goToPageNum(" +
+            pageNo +
+            ");return false;' data-original=\"" +
+            imageBean.imgPath +
+            "\" class='previewImg' src=\"" +
+            imageBean.imgPath +
+            '"><span>' +
+            pageNo +
+            "</span></div>";
+        }
+        totalCount = data.totalCount;
+        $(".flipbook").html(imgHtml);
+        $("#pageSelect").html(pageSelectHtml);
+        $("#preview").html(previewHtml);
+      }
+
+      function goToPageNum(pageNo) {
+        var hasPage = $(".flipbook").turn("hasPage", pageNo);
+        if (hasPage) {
+          $(".flipbook").turn("page", pageNo);
+        }
+        maindivShow();
+      }
+
+      function goToPage(obj) {
+        var pageNo = obj.value;
+        goToPageNum(pageNo);
+      }
+
+      function getBookId() {
+        var uri = window.location.pathname;
+        return uri.substring(uri.indexOf("_") + 1, uri.indexOf("."));
+      }
+
+      
+
+      var docId=1;
+      var docTitle = "BMW+Z4跑车";
+    var docCover="http://pic.go007.com/2013/09/20130913/635146679324527500.jpg";
+    var docUrl = "https://bj2em.csb.app/";
+    var docWidth = 980;
+    var docHeight = 1330;
+    var padding = IsPC() ? 100 : 10;
+    var paddingV = 100;
+
+    var pageSize = 6;
+    var pageNo = 1;
+    var bookId = 0;
+    var pageResult = null;
+    var pcFlag = true;
+    var pages = 8;
+
+    var totalCount = 1;
+    var zoomSize = 1;
+
+    //开关是不是编辑模式
+    var isEditorMode = false;
+
+     //是否显示输入密码
+    var needPassword=false;
+
+
+    $("#passwordPopup img").attr("src",docCover)
+    
+$(function(){
+  $("body").addClass(IsPC()?"notmobile":"mobile");
+   
+  if(location.search.indexOf('lite')!=-1)
+    {
+       $(".flipbook-header").hide();
+       $(".flipbook-controls").hide();
+       $(".flipbook-background-page-turner").hide();
+       $(".flipbook-controls.lite").show();
+    }else{
+      $(".flipbook-controls.lite").hide();
+    }
+
+})
+  
+
+    </script>
+    
+    <script src="./js/basic.js"></script>
+  </body>
+</html>
