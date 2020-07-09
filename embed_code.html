@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link href="./css/jquery-ui.min.css?v=20130801" rel="stylesheet" />
+    <link href="./css/pdf2htmlEX.base.min.css?v=20130801" rel="stylesheet" />
+    <link href="./css/pdf2htmlEX.fancy.min.css?v=20130801" rel="stylesheet" />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/3.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/2.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://baige-1251142715.file.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/1.css"
+    />
+
+    <!-- <link
+    href="http://doc.baige.me/css/page.css?v=20180209-10"
+    rel="stylesheet"
+  /> -->
+
+    <!-- <script>
+    pdf2htmlEX.defaultViewer = new pdf2htmlEX.Viewer({
+      container_id: "page-container",
+      sidebar_id: "sidebar",
+      outline_id: "outline",
+      loading_indicator_cls: "loading-indicator",
+    });
+  </script> -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <script type="text/javascript" src="./js/common.js"></script>
+    <script type="text/javascript" src="./extras/jquery.min.1.7.js"></script>
+    <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
+
+    <script
+      type="text/javascript"
+      src="./extras/modernizr.2.5.3.min.js"
+    ></script>
+
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="//at.alicdn.com/t/font_1875522_ooaaqzcadm.css"
+    />
+
+    <link rel="stylesheet" type="text/css" href="./css/basic.css" />
+    <link rel="stylesheet" type="text/css" href="./css/editor.css" />
+    <style></style>
+  </head>
+  <body>
+    <a
+      href="#"
+      class="embeded btn"
+      data-toggle="modal"
+      data-id="1"
+      data-title="BMW"
+      data-cover="https://www.shamrocklabels.com/wp-content/uploads/2018/11/Catalog-Cover-791x1024.jpg"
+      data-url="https://bj2em.csb.app/"
+      onclick="showEmbedCodePop(event)"
+      >嵌入</a
+    >
+
+    <div id="embedCodePopup">
+      <div class="form-item">
+        <textarea name="embedCode" id="embedCode" readonly rows="5"> </textarea>
+      </div>
+      <div class="form-item">
+        <div class="leftpart">
+          <span>设置</span
+          ><label
+            ><input
+              name="setting-icon-switch"
+              type="checkbox"
+              hidden
+              checked
+              onchange="handleSettingIconSwitch(event)"/><span
+              class="setting-icon iconfont icon-arrow-down"
+          /></label>
+        </div>
+        <button onclick="copyEmbedCode()">复制代码</button>
+      </div>
+      <div class="form-item">
+        <div class="embedCode-tabs">
+          <ul>
+            <li><a href="#interactiveMode">交互</a></li>
+            <li><a href="#coverMode">封面</a></li>
+          </ul>
+          <div id="interactiveMode" class="editor-inside-panel">
+            <div class="size_info_setting form-item">
+              尺寸：<input class="size_info size_info_w" value="600" />
+              <span>x</span>
+              <input class="size_info size_info_h" value="480" />
+              <span>像素</span>
+            </div>
+          </div>
+          <div id="coverMode" class="editor-inside-panel">
+            <div class="cover_mode_setting form-item">
+              <label for="coverMode-pop"
+                ><input
+                  id="coverMode-pop"
+                  type="radio"
+                  name="coverMode"
+                  value="popup"
+                  checked
+                />
+                弹出框
+              </label>
+              <label for="coverMode-embed"
+                ><input
+                  id="coverMode-embed"
+                  type="radio"
+                  name="coverMode"
+                  value="blank"
+                />
+                新页
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="preview_content form-item"></div>
+      </div>
+    </div>
+
+    <div id="messageBox"></div>
+
+    <script>
+      var docId = 1;
+      var docTitle = "BMW+Z4跑车";
+      var docCover =
+        "https://www.shamrocklabels.com/wp-content/uploads/2018/11/Catalog-Cover-791x1024.jpg";
+      var docUrl = "https://bj2em.csb.app/";
+
+      function handleSettingIconSwitch(e) {
+        if ($("#embedCodePopup [name=setting-icon-switch]").attr("checked")) {
+          $(".embedCode-tabs").show(); //{effect:"size", to:{height:"auto"}})
+        } else {
+          $(".embedCode-tabs").hide(); //{effect:"size", to:{height:0}})
+        }
+      }
+
+      var embedType = "interactive";
+      var embedOpenType = "popup";
+
+      function handleEmbedCodeTabChange(id) {
+        // var content="";
+        if (id == "interactiveMode") {
+          embedType = "interactive";
+          //   var url=new URL(docUrl);
+          //   if(url.search)
+          //     url.search+="&lite";
+          //   else
+          //     url.search="?lite";
+
+          //   content=`<iframe src='${url.href}' style="width:100%;height:100%;" frameborder=0 seamless="seamless"  ></iframe>`
+        } else {
+          embedType = "cover";
+          //   content=`<img src='${docCover}' style="object-fit: contain;width:100%;height:100%;" frameborder=0 seamless="seamless" />`
+        }
+
+        // $(".preview_content").empty().append(content);
+        updateEmbedCode();
+      }
+
+      function showEmbedCodePop(event) {
+        docId = $(event.target).data("id");
+        docTitle = $(event.target).data("title");
+        docCover = $(event.target).data("cover");
+        docUrl = $(event.target).data("url");
+
+        $("#embedCodePopup").dialog({
+          modal: true,
+          autoOpen: true,
+          title: "嵌套代码",
+          width: 480,
+          // height: 360,
+          resizable: false,
+          position: { my: "center", at: "center center-100", of: "body" }
+        });
+
+        handleEmbedCodeTabChange("interactiveMode");
+        updateEmbedCode();
+      }
+      function updateEmbedCode() {
+        embedOpenType = $("[name=coverMode]:checked").val();
+
+        var embedWidth = $(".size_info_w").val();
+        var embedHeight = $(".size_info_h").val();
+
+        embedWidth =
+          isNaN(embedWidth) || Number(embedWidth) < 10
+            ? 600
+            : Number(embedWidth);
+        embedHeight =
+          isNaN(embedHeight) || Number(embedHeight) < 10
+            ? 600
+            : Number(embedHeight);
+
+        var embedCode = "";
+        var titleContent = "";
+        if (embedType == "interactive") {
+          embedCode = `<iframe src='${docUrl}' style="width:${embedWidth}px;height:${embedHeight}px;" frameborder=0 seamless="seamless"  ></iframe>`;
+        } else {
+          var titleContent = `<img  src='${docCover}' style="height: 100%;width: 100%;object-fit: contain;filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.4));padding: 6px;box-sizing: border-box;" /><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:min(20%,80px);padding:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.8)"><img src='https://u9zw2.csb.app/book.png' /></div>`;
+          if (embedOpenType == "popup") {
+            var popid = "pop_" + Math.round(Math.random() * 100000);
+            embedCode = `<a href="#" style="width:100%;height:100%;position: relative;display:block"  onclick="document.querySelector('#${popid}').style.display='block'" title="打开百鸽文档-${docTitle}">${titleContent}</a>
+  <div id="${popid}" style="display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  ">
+  <a href="#" title="关闭" onclick="document.querySelector('#${popid}').style.display='none'" style="top:0;right:0;position:absolute;width:32px;height:32px;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVRYR+2WPQ8BQRRFz/5IGgoaGgoaGgoaGgoaGgoa/qS8ZCd5JnY+NpJHslvuzNx37t2ZN1tg/BTG9WkAmgRSEmgBz5qbNbo2BiACD6AL3DMhOsANaIcMhABccVe3D1wTIXrARc2thIgl4Fw4rSFwjkAMgJOaE0wvBiA6vpsxcKyAGAEHNRZNLQVA9HxXU2DvQUyAnXqXklZWJ/TdzYFtWXAGbFTxUEpv3KkJuEW+y2U5sFKqn9Kp3Da5ACLku9XiOpWkA1MHQIQXgHYt7ySNdVJVNekvAUw/gekmND2Gpo3ItBWbXkY/cR2b/pC4fhX9rQp0v+jaup0wt+N+9TL6WnERahJoEngBVwxCId2AjWYAAAAASUVORK5CYII=" /></a>
+  <iframe src='${docUrl}' style="width:100%;height:100%;" frameborder=0 seamless="seamless"  ></iframe>
+  </div>`;
+          } else {
+            embedCode = `<a href='${docUrl}' target='_blank' style="width:100%;height:100%;position: relative;display:block" >${titleContent}</a>`;
+          }
+        }
+
+        $("[name=embedCode]").val(embedCode);
+        $(".preview_content")
+          .empty()
+          .removeClass("interactive")
+          .removeClass("cover")
+          .addClass(embedType)
+          .append($("[name=embedCode]").val());
+      }
+
+      function copyEmbedCode() {
+        var textarea = $("[name=embedCode]").get(0);
+        textarea.focus();
+        textarea.select();
+        try {
+          var flag = document.execCommand("copy"); //执行复制
+        } catch (eo) {
+          var flag = false;
+        }
+        showMessage("复制完成!");
+      }
+      $(`[name=embedButtonStyle]`).on("change", updateEmbedCode);
+      $(`[name=coverMode]`).on("change", updateEmbedCode);
+      $(`input.size_info`).on("input", updateEmbedCode);
+
+      function showMessage(msg) {
+        $("#messageBox")
+          .text(msg)
+          .show({ effect: "fade" })
+          .delay(2000)
+          .hide({ effect: "fade" });
+      }
+
+      $(function() {
+        $(".embedCode-tabs").tabs({
+          activate: function(event, ui) {
+            handleEmbedCodeTabChange($(ui.newPanel).attr("id"));
+          }
+        });
+
+        // handleEmbedCodeTabChange("interactiveMode");
+
+        // updateEmbedCode();
+      });
+    </script>
+  </body>
+</html>

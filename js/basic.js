@@ -5,6 +5,85 @@ window.requestAnimationFrame =
   };
 window.cancelAnimationFrame = window.cancelAnimationFrame || clearTimeout;
 
+
+
+//监听div大小变化
+(function($, h, c) {
+	var a = $([]),
+	e = $.resize = $.extend($.resize, {}),
+	i,
+	k = "setTimeout",
+	j = "resize",
+	d = j + "-special-event",
+	b = "delay",
+	f = "throttleWindow";
+	e[b] = 250;
+	e[f] = true;
+	$.event.special[j] = {
+		setup: function() {
+			if (!e[f] && this[k]) {
+				return false;
+			}
+			var l = $(this);
+			a = a.add(l);
+			$.data(this, d, {
+				w: l.width(),
+				h: l.height()
+			});
+			if (a.length === 1) {
+				g();
+			}
+		},
+		teardown: function() {
+			if (!e[f] && this[k]) {
+				return false;
+			}
+			var l = $(this);
+			a = a.not(l);
+			l.removeData(d);
+			if (!a.length) {
+				clearTimeout(i);
+			}
+		},
+		add: function(l) {
+			if (!e[f] && this[k]) {
+				return false;
+			}
+			var n;
+			function m(s, o, p) {
+				var q = $(this),
+				r = $.data(this, d);
+				r.w = o !== c ? o: q.width();
+				r.h = p !== c ? p: q.height();
+				n.apply(this, arguments);
+			}
+			if ($.isFunction(l)) {
+				n = l;
+				return m;
+			} else {
+				n = l.handler;
+				l.handler = m;
+			}
+		}
+	};
+	function g() {
+		i = h[k](function() {
+			a.each(function() {
+				var n = $(this),
+				m = n.width(),
+				l = n.height(),
+				o = $.data(this, d);
+				if (m !== o.w || l !== o.h) {
+					n.trigger(j, [o.w = m, o.h = l]);
+				}
+			});
+			g();
+		},
+		e[b]);
+	}
+})(jQuery, this);
+
+
 "Element" in this &&
   !("addEventListener" in this.Element.prototype) &&
   (function(global) {
@@ -106,7 +185,7 @@ if (supportOrientation) {
   window.addEventListener("orientationchange", updateOrientation, false);
 } else {
   //监听resize事件
-  window.addEventListener("resize", updateOrientation, false);
+  $("#maindiv").on("resize", updateOrientation, false);
 }
 
 var isOldBrowser = false;
@@ -160,7 +239,7 @@ function loadApp() {
   //}
 
   //init img
-  bookId = getBookId(bookId);
+  // bookId = getBookId(bookId);
   //  getImgList(bookId,pageNo,pageSize);
 
   // var w = $(window).width();
@@ -176,9 +255,6 @@ function loadApp() {
   //   display = "double";
   // }
 
-
-
-
   // And pass it to panzoom
   window.panzoomer = panzoom(document.querySelector(".flipbook-viewport"), {
     minZoom: 1,
@@ -192,9 +268,8 @@ function loadApp() {
     beforeMouseDown: function(e) {
       return false;
     },
-    beforeWheel:function(e)
-    {
-      if (isEditorMode) return false;
+    beforeWheel: function(e) {
+      if (isEditorMode) return true;
     },
     onDoubleClick: function(e) {
       if (isEditorMode) return false;
@@ -221,10 +296,9 @@ function loadApp() {
 
   var lastPanAble = false;
   panzoomer.on("transform", function(e) {
-    if(getZoom()>1)
-    {
+    if (getZoom() > 1) {
       showZoomPanel();
-    }else{
+    } else {
       hideZoomPanel();
     }
 
@@ -248,8 +322,6 @@ function loadApp() {
     lastPanAble = nowPanAble;
     // Note: e === instance.
   });
-
-
 
   // Create the flipbook
   $(".flipbook").turn({
@@ -286,7 +358,8 @@ function loadApp() {
 
         // Update the current URI
 
-        if (IsPC()) Hash.go(page).update();
+        //if (IsPC())
+        Hash.go(page).update();
 
         // console.log('turning',page);
 
@@ -299,6 +372,11 @@ function loadApp() {
         // console.log('turned',page);
         // $('#slider').slider('value', getViewNumber($(this), page));
 
+        if (!loadedPages[page]) {
+          var element = $("page p" + page);
+          loadPage(page, element);
+        }
+
         if (page == 1) {
           $(this).turn("peel", "br");
         }
@@ -308,7 +386,10 @@ function loadApp() {
         updatePageInfo();
         unselectClip();
         updateClips(page);
-        
+
+        console.log("mode", $(this).turn("display"));
+        console.log("page", $(this).turn("page"));
+        console.log("bookId", docId);
       },
 
       missing: function(event, pages) {
@@ -332,6 +413,7 @@ function loadApp() {
   $("#videoClipPopup").dialog({
     modal: true,
     autoOpen: false,
+    resizable: false,
     width: windowWidth / 4,
     maxWidth: windowWidth / 2,
     maxHeight: windowHeight / 2,
@@ -479,8 +561,6 @@ function loadApp() {
     }
   });
 
-
-
   // $(".flipbook-viewport").bind("zoom.swipeLeft", function(event) {
   //   pageDown();
   // });
@@ -589,31 +669,22 @@ function loadApp() {
     }
   });
 
-  
-
   updateOrientation();
   resizeViewport();
 
-  $(".pageLoading")
-    .delay(1000)
-    .hide("fade", {}, 100, function() {
-      $(this).remove();
-    }); //.remove();
-
-  $(window)
-    .resize(function() {
-      windowWidth =
-        window.innerWidth ||
-        Math.max(
-          document.documentElement.clientWidth,
-          document.body.clientWidth
-        );
-      windowHeight =
-        window.innerHeight ||
-        Math.max(
-          document.documentElement.clientHeight,
-          document.body.clientHeight
-        );
+  $("#maindiv").resize(function() {
+     
+      // window.innerWidth ||
+      // Math.max(
+      //   document.documentElement.clientWidth,
+      //   document.body.clientWidth
+      // );
+      
+      // window.innerHeight ||
+      // Math.max(
+      //   document.documentElement.clientHeight,
+      //   document.body.clientHeight
+      // );
       requestAnimationFrame(resizeViewport);
     })
     .bind("orientationchange", function() {
@@ -623,32 +694,28 @@ function loadApp() {
 
 //end of load app
 
-
-function showZoomPanel()
-{
+function showZoomPanel() {
   $(".flipbook-controls .zoomBt")
-  .addClass("icon-zoom-out")
-  .removeClass("icon-zoom-in");
-$(".flipbook-controls .zoom-panel-wraper").show();
-$(".flipbook-controls .zoom-panel .zoom-slider").slider({
-  min: 1,
-  max: 2,
-  step: 0.01,
-  slide: function(event, ui) {
-    zoomFlipbook(ui.value, true);
-    // console.log(ui.value );
-  }
-});
-
+    .addClass("icon-zoom-out")
+    .removeClass("icon-zoom-in");
+  $(".flipbook-controls .zoom-panel-wraper").show();
+  $(".flipbook-controls .zoom-panel .zoom-slider").slider({
+    min: 1,
+    max: 2,
+    step: 0.01,
+    slide: function(event, ui) {
+      zoomFlipbook(ui.value, true);
+      // console.log(ui.value );
+    }
+  });
 }
-function hideZoomPanel(){
+function hideZoomPanel() {
   $(".flipbook-controls .zoom-panel-wraper").hide();
   $(".flipbook-controls .zoomBt")
     .addClass("icon-zoom-in")
     .removeClass("icon-zoom-out");
   isMaxZoom = false;
 }
-
 
 //start of clips
 
@@ -658,13 +725,15 @@ function hideZoomPanel(){
 //测试用
 var clips = [
   {
-    bookId:1,
+    bookId: 1,
+    userId: 1,
     id: 1,
     type: "video",
     autoplay: true,
     inline: false,
     url: "5285890800802084431",
-    coverUrl:"http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/7f991ba05285890800802084431/1586588442_2839370066.100_0.jpg",
+    coverUrl:
+      "http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/7f991ba05285890800802084431/1586588442_2839370066.100_0.jpg",
     pageNumber: 1,
     x: 100,
     y: 100,
@@ -672,13 +741,15 @@ var clips = [
     height: 150
   },
   {
-    bookId:1,
+    bookId: 1,
+    userId: 1,
     id: 2,
     type: "video",
     autoplay: false,
     inline: true,
     url: "5285890800802084431",
-    coverUrl:"http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/7f991ba05285890800802084431/1586588442_2839370066.100_0.jpg",
+    coverUrl:
+      "http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/7f991ba05285890800802084431/1586588442_2839370066.100_0.jpg",
     pageNumber: 1,
     x: 250,
     y: 200,
@@ -686,11 +757,12 @@ var clips = [
     height: 200
   },
   {
-    bookId:1,
+    bookId: 1,
+    userId: 1,
     id: 3,
     type: "link",
     href: false,
-    to: "4",
+    linkTo: "4",
     pageNumber: 1,
     x: 450,
     y: 400,
@@ -698,11 +770,12 @@ var clips = [
     height: 100
   },
   {
-    bookId:1,
+    bookId: 1,
+    userId: 1,
     id: 4,
     type: "link",
     href: true,
-    to: "http://baidu.com",
+    linkTo: "http://baidu.com",
     pageNumber: 1,
     x: 550,
     y: 500,
@@ -727,7 +800,7 @@ function loadClips() {
       autoOpen: true,
       title: "需要密码",
       width: 320,
-      resize: false,
+      resizable: false,
       position: { my: "center", at: "center center-100", of: "#maindiv" }
     });
   } else {
@@ -741,8 +814,8 @@ function loadClips() {
     //加载两种贴片,合并到clips中去(暂时关闭)
     // clips = [];
     // return Promise.all([
-    // $.ajax({ url: 'clips/video' }),
-    //   $.ajax({ url: 'clips/link' })]).then(function ([videos, links]) {
+    // $.ajax({ url: 'clips/video',data:{bookId:docId} }),
+    //   $.ajax({ url: 'clips/link',data:{bookId:docId} })]).then(function ([videos, links]) {
     //     clips.push.apply(null,videos.map(function (video) {
     //         return {...video,type:"video"}
     //     }))
@@ -764,7 +837,7 @@ function addVideoClip(e, reeditMode) {
     autoOpen: true,
     title: "视频链接",
     width: 320,
-    resize: false,
+    resizable: false,
     position: { my: "center", at: "center center-100", of: "#maindiv" }
   });
 }
@@ -778,44 +851,47 @@ function addVideoCheck() {
   if (new URL(videoUrl).host.indexOf(".baige.me") == -1)
     showMessage("仅支持百鸽视频播放地址");
 
+    
+
   //这里验证一下视频链接
   $("#addVideoUrlPop button").attr("disabled", true);
-  $("#addVideoUrlPop .notice").show();
+  $("#addVideoUrlPop .notice").hide();
+  
   var id = /i=(.*)/gi.exec(videoUrl)[1];
   //获取视频文件id的接口
   $.ajax({
-    url: `http://player.baige.me/api/getVideo?url=${videoUrl}`,
+    url: `http://m.baige.me/api/getVideo?idString=${id}`,
     contentType: "text",
     type: "GET",
-    crossDomain: true,
+    crossDomain: true
   })
-    .done(function (res)
-    {
-      console.log(res.data);
+    .done(function(res) {
+      console.log(res);
 
       // videoUrl = $(res.data).find("video").attr("src");
-      videoUrl=res.data.fileId
-      var coverUrl=res.data.coverUrl
-  
-  // videoUrl = "5285890800802084431";
+      var fileId = res.fileId;
+      var coverUrl = res.coverUrl;
 
-  if (!isReeditVideoUrl) {
-    addClip("video", videoUrl,coverUrl);
-  } else if (selectedClipId) {
-    getClip(selectedClipId).url = videoUrl;
-    selectClip(selectedClipId);
-  }
-  $("#addVideoUrlPop button").attr("disabled", false);
-  $("#addVideoUrlPop .notice").hide();
-  }
-  )
-  .error(function (err) {
-    $("#addVideoUrlPop button").attr("disabled", false);
-    $("#addVideoUrlPop .notice").text("加载失败，请重试");
-  });
-  $("#addVideoUrlPop")
+      // videoUrl = "5285890800802084431";
+
+      if (!isReeditVideoUrl) {
+        addClip("video", videoUrl, coverUrl,fileId);
+      } else if (selectedClipId) {
+        getClip(selectedClipId).url = videoUrl;
+        selectClip(selectedClipId);
+      }
+      $("#addVideoUrlPop button").attr("disabled", false);
+      $("#addVideoUrlPop .notice").hide();
+      $("#addVideoUrlPop")
     .dialog("destroy")
     .hide();
+    })
+    .error(function(err) {
+      $("#addVideoUrlPop .notice").show();
+      $("#addVideoUrlPop button").attr("disabled", false);
+      $("#addVideoUrlPop .notice").text("加载失败，请重试");
+    });
+  
 }
 
 //当前选中的贴片ID
@@ -823,12 +899,12 @@ var selectedClipId;
 
 function updateClips(page) {
   if (!page) page = $(".flipbook").turn("page");
-  var pageRanges = [page]; // $(".flipbook").turn("range");
-  pageRanges.forEach(function(page) {
+  var pageRanges = $(".flipbook").turn("range");
+  pageRanges.forEach(function(p) {
     var foundClips = clips.filter(function(clip) {
-      return clip.pageNumber == page;
+      return clip.pageNumber == p;
     });
-    $(".flipbook .page.p" + page + " .clip-container").empty();
+    $(".flipbook .page.p" + p + " .clip-container").empty();
     foundClips.forEach(function(clip) {
       var x = clip.x;
       var y = clip.y;
@@ -836,95 +912,101 @@ function updateClips(page) {
       var height = clip.height;
       var normalMode = !isEditorMode || previewMode;
       var content = `<div data-clip-id='${clip.id}' class="${
-        !isEditorMode ? "normal-clip" : ""
+        normalMode ? "normal-clip" : ""
       } doc-clip ${
         clip.type
       }-clip" style="left:${x}px;top:${y}px;width:${width}px;height:${height}px;
-      ${
-        clip.type != "video" || !clip.inline
-          ? clip.type == "video"
-            ? "background:rgba(40,40,255,0.5)"
-            : "background:rgba(255,40,40,0.5)"
-          : "background:rgba(0,0,0,0)"
-      }
       ">
-      
-      
       </div>`;
+
+      // ${
+      //   clip.type != "video" || !clip.inline
+      //     ? clip.type == "video"
+      //       ? "background:rgba(40,40,255,0.5)"
+      //       : "background:rgba(255,40,40,0.5)"
+      //     : "background:rgba(0,0,0,0)"
+      // }
 
       // ${
       //   isEditorMode && !previewMode
       //     ? '<span class="edit-icon iconfont icon-edit" /> '
       //     : ""
       // }
-      
 
       if (normalMode && clip.type == "link") {
         var linkContent = `<div style="position:absolute;width:100%;height:100%;display:flex;justify-content:center;align-items:center;padding:8px">
-        <span class=" action-bt link-icon iconfont icon-link"   />
+       
         </div>`;
+        // <span class=" action-bt link-icon iconfont icon-link"   />
         // if (clip.mode == 'page') {
         //   content = $(content).append(linkContent);
         // } else {
         //   content = `<a href='${clip.url}' target="_blank">${content}${linkContent}</a>`;
         // }
         content = $(content).append(linkContent);
-      } else if ( clip.type == "video") {
-        var videoContent,actionBtContent;
-          if(normalMode){
-        //如果是嵌入式，直接插入进去
-        //<span class="mute-icon iconfont icon-mute"   />
-        var videoUrl = `http://player.baige.me/vod?i=${clip.url}&autoplay=${
-          clip.autoplay ? "true" : "false"
-        }&width=${width}&height=${height}`;
-        //videoUrl = ""; //https://baidu.com";
-         videoContent = `<iframe class="video-content" src="${videoUrl}" 
+      } else if (clip.type == "video") {
+        var videoContent, actionBtContent;
+        if (normalMode) {
+          //如果是嵌入式，直接插入进去
+          //<span class="mute-icon iconfont icon-mute"   />
+          var videoUrl = `http://player.baige.me/vod?i=${clip.url}&autoplay=${
+            clip.autoplay ? "true" : "false"
+          }&width=${width}&height=${height}`;
+          //videoUrl = ""; //https://baidu.com";
+          videoContent = `<iframe class="video-content" src="${videoUrl}" 
         frameborder="0" scrolling="no" width="${width}" 
         height="${height}" allowfullscreen > </iframe>`;
 
-        // `<video width=${width} height=${height} ${
-        //   clip.autoplay ? "autoplay" : ""
-        // } src='${clip.url}' loop />`;
-        actionBtContent = `<div style="position:absolute;width:100%;height:100%;display:flex;justify-content:center;align-items:center;padding:8px">
+          // `<video width=${width} height=${height} ${
+          //   clip.autoplay ? "autoplay" : ""
+          // } src='${clip.url}' loop />`;
+          actionBtContent = "";
+          /* `<div style="position:absolute;width:100%;height:100%;display:flex;justify-content:center;align-items:center;padding:8px">
         <span class=" action-bt play-icon iconfont ${
           clip.inline && clip.autoplay ? "icon-pause" : "icon-play"
         }"   />
         </div>
-        `;
-      }else{
-        videoContent = `<img class="video-content" style="background: black;width:100%;height:100%;object-fit:contain" src="${clip.coverUrl}" > </img>`;
-        actionBtContent = clip.inline?`<div style="pointer-event:none;position:absolute;width:100%;height:100%;display:flex;justify-content:center;align-items:center;padding:8px">
+        `;*/
+        } else {
+          videoContent = `<img class="video-content" style="background: black;width:100%;height:100%;object-fit:contain" src="${
+            clip.coverUrl
+          }" > </img>`;
+          actionBtContent = clip.inline
+            ? `<div style="pointer-event:none;position:absolute;width:100%;height:100%;display:flex;justify-content:center;align-items:center;padding:8px">
         <span class=" action-bt play-icon iconfont ${
           clip.inline && clip.autoplay ? "icon-pause" : "icon-play"
         }"   />
         </div>
-        `:"";
-      }
+        `
+            : "";
+        }
 
         if (clip.inline) content = $(content).append(videoContent);
         content = $(content).append(actionBtContent);
       }
 
-      $(".flipbook .page.p" + page + " .clip-container").append(content);
+      $(".flipbook .page.p" + p + " .clip-container").append(content);
     });
   });
 }
-function addClip(type, url,coverUrl) {
-  let id = uuidv4;
+function addClip(type, url, coverUrl,fileId) {
+  let id = uuidv4();
   clips.push({
-    bookId:docId,
+    bookId: docId,
+    userId: userId,
     id: id,
     type: type,
     autoplay: true,
     inline: true,
     url: url || "",
-    coverUrl:coverUrl,
-    to: url,
+    fileId:fileId,
+    coverUrl: coverUrl,
+    linkTo: url,
     pageNumber: $(".flipbook").turn("page"),
     x: 100,
     y: 100,
-    width: 100,
-    height: 100,
+    width: type == "link" ? 100 : 180,
+    height: type == "link" ? 30 : 120,
     isTemp: true,
     dirty: true
   });
@@ -946,31 +1028,28 @@ function saveClips() {
   var posts = [];
   if (videoClips.length > 0) {
     //保存视频贴片的接口videoClips/save
-    videoClips.forEach(function(clip)
-    {
+    videoClips.forEach(function(clip) {
       posts.push(
         $.ajax({
           url: "http://m.baige.me/api/add/saveVideo",
-          contentType:"application/json",
-          data: JSON.stringify( clip),
+          contentType: "application/json",
+          data: JSON.stringify(clip),
           type: "post"
         })
       );
-    })
-    
+    });
   }
   if (linkClips.length > 0) {
     //保存链接贴片的接口linkClips/save
-    linkClips.forEach(function(clip)
-    {
-    posts.push(
-      $.ajax({
-        url: "http://m.baige.me/api/add/saveLink",
-        data: JSON.stringify( clip),
-        type: "post"
-      })
-    );
-  })
+    linkClips.forEach(function(clip) {
+      posts.push(
+        $.ajax({
+          url: "http://m.baige.me/api/add/saveLink",
+          data: JSON.stringify(clip),
+          type: "post"
+        })
+      );
+    });
   }
 
   if (posts.length > 0) {
@@ -990,7 +1069,7 @@ function removeClip(e, clipId) {
   var clipId = clipId || selectedClipId;
   unselectClip(true);
   var clip = getClip(clipId);
-  if (!clip.isTemp) {
+  if (clip && !clip.isTemp) {
     //删除贴片的接口，根据类型不同，地址不同。只提交了个Id上去
     var url = clip.type == "video" ? "videoClips/delete" : "linkClips/delete";
     // $.ajax({ url: url, data: { id: clipId }, type: "post" }).done(
@@ -1025,7 +1104,7 @@ function selectClip(clip) {
     return;
   }
 
-  $("#addClipTips").hide();
+  // $("#addClipTips").hide();
   if (clip.type == "video") $("#videoClip").show();
   else $("#linkClip").show();
 
@@ -1072,28 +1151,28 @@ function selectClip(clip) {
             x: !(nx < 0 || nx + nw > docWidth),
             y: !(ny < 0 || ny + nh > docHeight)
           };
-        } else 
-        {
+        } else {
           clip.x = nx;
           clip.y = ny;
           clip.width = nw;
           clip.height = nh;
           clip.dirty = true;
 
-          $(selectClipDom).find(".action-bt").css(
-            "transform",
-            `scale(${1 / transformInfo.scalex},${1 / transformInfo.scaley})`
-          );
-          $(selectClipDom).find(".video-content").css(
-            {
-              width:orginW*transformInfo.scalex+"px",
-              height:orginH*transformInfo.scaley+"px",
-              transform:`scale(${1 / transformInfo.scalex},${1 / transformInfo.scaley})`
-            }
-          );
+          $(selectClipDom)
+            .find(".action-bt")
+            .css(
+              "transform",
+              `scale(${1 / transformInfo.scalex},${1 / transformInfo.scaley})`
+            );
+          $(selectClipDom)
+            .find(".video-content")
+            .css({
+              width: orginW * transformInfo.scalex + "px",
+              height: orginH * transformInfo.scaley + "px",
+              transform: `scale(${1 / transformInfo.scalex},${1 /
+                transformInfo.scaley})`
+            });
 
-          
-          
           updateClipSizeInfo();
           return { x: true, y: true };
         }
@@ -1114,12 +1193,13 @@ function selectClip(clip) {
     $("[name=autoPlay]").attr("checked", clip.autoplay);
     // $("[name=videoTitle]").val(clip.title);
   } else if (clip.type == "link") {
-    $("[name=linkUrl]").val(clip.to);
     $(`[name=linkMode][value=${clip.href ? 1 : 0}]`).attr("checked", "true");
     if (clip.href) {
+      $("[name=linkUrl]").val(clip.linkTo);
       $(`.normal-link-mode`).show();
       $(`.page-link-mode`).hide();
     } else {
+      $("[name=jumpPage]").val(clip.linkTo);
       $(`.normal-link-mode`).hide();
       $(`.page-link-mode`).show();
     }
@@ -1184,7 +1264,7 @@ function syncClip() {
     clip.autoplay = !!$("[name=autoPlay]").attr("checked");
     // clip.title = $("[name=videoTitle]").val();
   } else if (clip.type == "link") {
-    clip.to = $("[name=linkUrl]").val();
+    clip.linkTo = $("[name=linkUrl]").val();
     clip.href = $(`[name=linkMode]:checked`).val() == "1";
     // clip.title = $("[name=linkTitle]").val();
   }
@@ -1222,31 +1302,24 @@ function unselectClip(noSave) {
 
   // !noSave && saveClip();
 
-
-
-
-
-  try{
-  $(`[data-clip-id=${selectedClipId}]`)
-    .removeClass("selected")
-    .freetrans("destroy");
-  }catch(err){}
+  try {
+    $(`[data-clip-id=${selectedClipId}]`)
+      .removeClass("selected")
+      .freetrans("destroy");
+  } catch (err) {}
 
   // var _selectClipId=selectedClipId;
   // requestAnimationFrame(function(){
-   
-    $(`[data-clip-id=${selectedClipId}] .video-content`).css(
-      {
-        width:"100%",
-        height:"100%",
-        transform:`none`
-      }
-    );
+
+  $(`[data-clip-id=${selectedClipId}] .video-content`).css({
+    width: "100%",
+    height: "100%",
+    transform: `none`
+  });
   // })
-  
 
   selectedClipId = null;
-  $("#addClipTips").show();
+  // $("#addClipTips").show();
   $("#videoClip").hide();
   $("#linkClip").hide();
 }
@@ -1255,106 +1328,101 @@ $(document).on("mousedown", ".flipbook", function() {
   unselectClip();
 });
 
-$(document).on(
-  "click",
-  ".flipbook .clip-container .doc-clip .action-bt",
-  function(e) {
-    var clip = getClip(
-      $(this)
-        .parents(".doc-clip")
-        .data("clip-id")
-    );
-    if (!clip) return;
-    var clipDom = $(`[data-clip-id=${clip.id}]`);
+$(document).on("click", ".flipbook .clip-container .doc-clip", function(e) {
+  var clip = getClip(
+    $(this).data("clip-id")
+    // .parents(".doc-clip")
+  );
+  if (!clip) return;
+  var clipDom = $(`[data-clip-id=${clip.id}]`);
 
-    //编辑模式
-    if (isEditorMode && !previewMode) {
-      selectClip(clip);
-    }
-    //普通模式
-    else {
-      if (clip.type == "link") {
-        if (clip.href) {
-          window.open(clip.to);
-        } else {
-          pageTo(clip.to);
-        }
-      } else if (clip.type == "video") {
-        if (!clip.inline) {
-          var videoUrl = `http://player.baige.me/vod?i=${clip.url}&autoplay=${
-            clip.autoplay ? "true" : "false"
-          }&width=600&height=480`;
-          // videoUrl = ""; //"https://baidu.com";
-          var videoContent = `<iframe src="${videoUrl}" 
+  //编辑模式
+  if (isEditorMode && !previewMode) {
+    selectClip(clip);
+  }
+  //普通模式
+  else {
+    if (clip.type == "link") {
+      if (clip.href) {
+        window.open(clip.linkTo);
+      } else {
+        pageTo(clip.linkTo);
+      }
+    } else if (clip.type == "video") {
+      if (!clip.inline) {
+        var videoUrl = `http://player.baige.me/vod?i=${clip.fileId}&autoplay=${
+          clip.autoplay ? "true" : "false"
+        }&width=600&height=480`;
+        // videoUrl = ""; //"https://baidu.com";
+        var videoContent = `<iframe src="${videoUrl}" 
           frameborder="0" scrolling="no" width="600" 
           height="480" allowfullscreen > </iframe>`;
 
-          // `<video   autoplay='${
-          //   clip.autoplay ? "autoplay" : "none"
-          // }' src='${clip.url}' controls loop/>`;
-          $("#videoClipPopup")
-            .dialog("open")
-            .dialog("option", "width", 600)
-            .dialog("option", "height", 480 + 30)
-            .empty()
-            .append(videoContent);
-        } else {
-          var videoDom = $(clipDom)
-            .find("video")
-            .get(0);
-          if (videoDom) {
-            // if (videoDom.paused)
-            //   $(clipDom).find(".play-icon").removeClass("icon-pause").addClass('icon-play');
-            // else
-            //   $(clipDom).find(".play-icon").removeClass("icon-play").addClass('icon-pause');
+        // `<video   autoplay='${
+        //   clip.autoplay ? "autoplay" : "none"
+        // }' src='${clip.url}' controls loop/>`;
+        $("#videoClipPopup")
+          .dialog("open")
+          .dialog("option", "width", 600)
+          .dialog("option", "height", 480 + 30)
+          .empty()
+          .append(videoContent);
+      } else {
+        var videoDom = $(clipDom)
+          .find("video")
+          .get(0);
+        if (videoDom) {
+          // if (videoDom.paused)
+          //   $(clipDom).find(".play-icon").removeClass("icon-pause").addClass('icon-play');
+          // else
+          //   $(clipDom).find(".play-icon").removeClass("icon-play").addClass('icon-pause');
 
-            if (!videoDom.paused) {
-              $(clipDom)
-                .find(".play-icon")
-                .removeClass("icon-pause")
-                .addClass("icon-play");
-              videoDom.pause();
-            } else {
-              $(clipDom)
-                .find(".play-icon")
-                .removeClass("icon-play")
-                .addClass("icon-pause");
-              videoDom.play();
-            }
-
-            // if (videoDom.muted) {
-            //   $(clipDom)
-            //     .find(".mute-icon")
-            //     .removeClass("icon-mute")
-            //     .addClass("icon-unmute");
-            //   videoDom.muted = false;
-            // } else {
-            //   $(clipDom)
-            //     .find(".mute-icon")
-            //     .removeClass("icon-unmute")
-            //     .addClass("icon-mute");
-            //   videoDom.muted = true;
-            // }
+          if (!videoDom.paused) {
+            $(clipDom)
+              .find(".play-icon")
+              .removeClass("icon-pause")
+              .addClass("icon-play");
+            videoDom.pause();
+          } else {
+            $(clipDom)
+              .find(".play-icon")
+              .removeClass("icon-play")
+              .addClass("icon-pause");
+            videoDom.play();
           }
+
+          // if (videoDom.muted) {
+          //   $(clipDom)
+          //     .find(".mute-icon")
+          //     .removeClass("icon-mute")
+          //     .addClass("icon-unmute");
+          //   videoDom.muted = false;
+          // } else {
+          //   $(clipDom)
+          //     .find(".mute-icon")
+          //     .removeClass("icon-unmute")
+          //     .addClass("icon-mute");
+          //   videoDom.muted = true;
+          // }
         }
       }
     }
   }
-);
-
-$(document).on("click", ".flipbook .clip-container .doc-clip", function(e) {
-  var clip = getClip($(this).data("clip-id"));
-  if (!clip) return;
-  var clipDom = $(`[data-clip-id=${clip.id}]`);
-  selectClip(clip);
 });
+
+// $(document).on("click", ".flipbook .clip-container .doc-clip", function(e) {
+//   var clip = getClip($(this).data("clip-id"));
+//   if (!clip) return;
+//   var clipDom = $(`[data-clip-id=${clip.id}]`);
+//   selectClip(clip);
+// });
 
 //预览模式
 var previewMode = false;
 function togglePreviewMode() {
-  // previewMode = !previewMode;
-  isEditorMode = !isEditorMode;
-  if (!isEditorMode) $(".preview-mode-bt").text("结束预览模式");
+  previewMode = !previewMode;
+  // isEditorMode = !isEditorMode;
+  if (!previewMode) $(".preview-mode-bt").text("结束预览模式");
   else $(".preview-mode-bt").text("进入预览模式");
   updateClips($(".flipbook").turn("page"));
 }
@@ -1444,10 +1512,11 @@ function updatePageInfo() {
   var p = $(".flipbook").turn("page");
   var mp = $(".flipbook").turn("pages");
   var display = $(".flipbook").turn("display");
-
-  $(".flipbook-pageinfo-current:not(::focus)").val(
-    p > 1 && p < mp && display == "double" ? p + "-" + (p + 1) : p
-  );
+  try {
+    $(".flipbook-pageinfo-current:not(:focus)").val(
+      p > 1 && p < mp && display == "double" ? p + "-" + (p + 1) : p
+    );
+  } catch (error) {}
   $(".flipbook-pageinfo-total").text(mp);
   $(".flipbook-pageinfo-current-text").text(p);
 
@@ -1499,8 +1568,8 @@ function zoomFlipbook(zoom, force) {
   var zoomer = { zoom: getZoom() };
 
   var pos = {
-    x: (window.innerWidth / 2) * (1 - zoom),
-    y: (window.innerHeight / 2) * (1 - zoom)
+    x: (windowWidth / 2) * (1 - zoom),
+    y: (windowHeight / 2) * (1 - zoom)
   };
 
   if (force) {
@@ -1560,7 +1629,7 @@ function zoomToggle() {
     zoomFlipbook(1);
     isMaxZoom = false;
   } else {
-    zoomFlipbook(maxZoom);
+    zoomFlipbook(2);
     isMaxZoom = true;
   }
   return isMaxZoom;
@@ -1633,20 +1702,58 @@ function showPageEndTips(tip) {
     .hide("fade");
 }
 
-function loadPage(page, book) {
+function PageLoader(pageNumber, retryTimes = 0) {
+  $.ajax({ url: pageUrl + pageNumber + ".svg?" + retryTimes, dataType: "text" })
+    .done(function(pageHtml) {
+      checkHideLoading();
+      //$.ajax({ url: 'https://book-upload-1251142715.cos.ap-shanghai.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/BMW%2BZ4%E8%B7%91%E8%BD%A6-'+page+'.svg' ,dataType:"text"}).done(function(pageHtml) {
+      $(".flipbook .page.p" + pageNumber)
+        .html(
+          '<div class="gradient"></div><div class="page-bg"></div>' +
+            pageHtml +
+            '<div class="clip-container"></div>'
+        )
+        .addClass("page-container");
+      updateClips(pageNumber);
+      rescalePages();
+      loadedPages[pageNumber] = true;
+      checkHideLoading();
+    })
+    .error(function() {
+      console.log(retryTimes, "retry...");
+      //重试了5次还不行，只好放弃了。
+      if (retryTimes > 5) return;
+      loadingPages[pageNumber] = new PageLoader(pageNumber, retryTimes + 1);
+    });
+}
+
+var loadedPages = {};
+var loadingPages = {};
+function loadPage(pageNumber, book) {
   //加载具体的页的html文件内容
   // $.ajax({ url: "pages/page" + page + ".html" }).done(function(pageHtml) {
-  $.ajax({ url: 'https://book-upload-1251142715.cos.ap-shanghai.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/BMW%2BZ4%E8%B7%91%E8%BD%A6-'+page+'.svg' ,dataType:"text"}).done(function(pageHtml) {
-    $(".flipbook .page.p" + page)
-      .html(
-        '<div class="gradient"></div><div class="page-bg"></div>' +
-          pageHtml +
-          '<div class="clip-container"></div>'
-      )
-      .addClass("page-container");
-    updateClips(page);
-    rescalePages();
-  });
+  loadingPages[pageNumber] = new PageLoader(pageNumber);
+}
+function checkHideLoading() {
+  var allPass = true;
+  $(".flipbook")
+    .turn("view")
+    .forEach(function(page) {
+      if (page == 0) return;
+      allPass = allPass && loadedPages[page];
+    });
+  if (allPass) {
+    $(".pageLoading").hide("fade", {}, 200, function() {
+      $(this).remove();
+    }); //.remove();
+
+    $(".flipbook")
+      .turn("view")
+      .forEach(function(page) {
+        if (page == 0) return;
+        updateClips(page);
+      });
+  }
 }
 
 function addPage(page, book) {
@@ -1672,7 +1779,9 @@ function addPage(page, book) {
     // It will contain a loader indicator and a gradient
     // console.log('pageCaches[page]',pageCaches[page],)
     element.html(
-      '<div class="gradient"></div><div class="page-bg"></div><div class="loader-info">加载中...</div>'
+      `<div class="gradient"></div><div class="page-bg"></div><div class="loader-info"><div class="loadingio-spinner-spinner-o68w1kfvx9d"><div class="ldio-tdrqc5nm7r">
+      <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      </div></div></div>`
     );
 
     // Load the page
@@ -1691,10 +1800,14 @@ function rescalePages() {
   bookWidth = $(".flipbook").turn("size").width / displayModeAdjust;
   bookHeight = $(".flipbook").turn("size").height;
 
+  var views = $(".flipbook")
+    .turn("view")
+    .filter(function(i) {
+      return Number(i) != 0;
+    });
 
-  var views=$(".flipbook").turn("view").filter(function(i){return Number(i)!=0})
-
-  bookViewWidth = $(".flipbook").turn("size").width/displayModeAdjust*views.length;
+  bookViewWidth =
+    ($(".flipbook").turn("size").width / displayModeAdjust) * views.length;
   bookViewHeight = $(".flipbook").turn("size").height;
 
   documentZoom = Math.min(bookWidth / docWidth, bookHeight / docHeight);
@@ -1723,6 +1836,10 @@ function rescalePages() {
   }
 }
 function resizeViewport() {
+
+  windowWidth = $("#maindiv").width();
+      windowHeight = $("#maindiv").height();
+
   var nw = 0;
   var nh = 0;
   var s = 1;
@@ -1771,12 +1888,12 @@ function resizeViewport() {
 
   centerFlipbook();
 }
-var windowWidth =
-  window.innerWidth ||
-  Math.max(document.documentElement.clientWidth, document.body.clientWidth);
-var windowHeight =
-  window.innerHeight ||
-  Math.max(document.documentElement.clientHeight, document.body.clientHeight);
+var windowWidth = $("#maindiv").width();
+// window.innerWidth ||
+// Math.max(document.documentElement.clientWidth, document.body.clientWidth);
+var windowHeight = $("#maindiv").height();
+// window.innerHeight ||
+// Math.max(document.documentElement.clientHeight, document.body.clientHeight);
 
 // Load the HTML4 version if there's not CSS transform
 
@@ -1789,17 +1906,20 @@ var maxZoom = 2.5;
 //当前的文档的放缩值
 var documentZoom = 1;
 
+$("html")
+  .get(0)
+  .style.setProperty("--colorLink", colorLink);
+
 yepnope({
   test: Modernizr.csstransforms,
-  yep: ["./lib/turn.js"],
-  nope: ["./lib/turn.html4.min.js"],
+  yep: ["/libs/turn.js"],
+  nope: ["/libs/turn.html4.min.js"],
   both: [
-    "./css/basic.css",
-    "./lib/hash.js",
-    "./lib/browser-polyfill.js",
-    "./lib/panzoom.js",
-    "./lib/hammer.min.js",
-    "./lib/anime.min.js"
+    "/libs/hash.js",
+    "/libs/browser-polyfill.js",
+    "/libs/panzoom.js",
+    "/libs/hammer.min.js",
+    "/libs/anime.min.js"
   ],
   complete: loadClips
 });

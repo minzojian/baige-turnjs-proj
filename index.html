@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+editor<!DOCTYPE html>
 <!--[if lt IE 7]>
 <html lang="en" class="ie6"> <![endif]-->
 <!--[if IE 7]>
@@ -54,7 +54,7 @@
       type="text/javascript"
       src="./extras/modernizr.2.5.3.min.js"
     ></script>
-    <link rel="stylesheet" type="text/css" href="./css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1875522_ooaaqzcadm.css" />
     <link rel="stylesheet" type="text/css" href="./css/style.css" />
     <link rel="stylesheet" type="text/css" href="./css/template.css" />
     <link rel="stylesheet" type="text/css" href="./css/basic.css" />
@@ -96,9 +96,9 @@
     </style>
   </head>
   <body
-
+  style="display:flex"
   >
-    <div id="sidebar" style="display: none;">
+    <div id="sidebar2" style="width:320px;background:#666;position: relative;height: 100%;">
       <div id="outline"></div>
     </div>
     <div
@@ -106,7 +106,7 @@
       style="
         z-index: 10;
         display: block;
-        position: absolute;
+        position: relative;
         margin-top: 0px;
         width: 100%;
         height: 100%;
@@ -193,8 +193,14 @@
 
 
 
+  
+   
+
   </div>
 
+  <div id="sidebar22" style="width:320px;background:#666;position: relative;height: 100%;">
+    <div id="outline"></div>
+  </div>
 
 
   <div id="passwordPopup" class="normal-form-popup" style="display: none;">
@@ -219,6 +225,9 @@
           text-align: center;
           width: 240px;
           height: 180px;">
+
+          <div class="flipbook-title" style="    margin-bottom: 40px;
+          font-size: 18px;">BMW+Z4跑车</div>
           <div class="loading-pic book">
               <div class="book__page"></div>
               <div class="book__page"></div>
@@ -533,23 +542,25 @@
       }
 
       
-
+      var userId=1;
       var docId=1;
       var docTitle = "BMW+Z4跑车";
     var docCover="http://pic.go007.com/2013/09/20130913/635146679324527500.jpg";
     var docUrl = "https://bj2em.csb.app/";
-    var docWidth = 980;
-    var docHeight = 1330;
+    var docWidth = 595//980;
+    var docHeight = 807//1330;
     var padding = IsPC() ? 100 : 10;
     var paddingV = 100;
-      var pageUrl="";
+      var pageUrl="https://book-upload-1251142715.cos.ap-shanghai.myqcloud.com/113425e3-35fc-4ebc-a399-927d32683391/BMW%2BZ4%E8%B7%91%E8%BD%A6-";
+      
+
     var pageSize = 6;
     var pageNo = 1;
     var bookId = 0;
     var pageResult = null;
     var pcFlag = true;
     var pages = 8;
-
+    var colorLink='black';
     var totalCount = 1;
     var zoomSize = 1;
 

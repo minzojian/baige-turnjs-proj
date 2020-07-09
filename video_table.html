@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <style>
+      body{
+       
+      }
+      tr{
+       
+      }
+    td img
+    {
+      height:60px;
+      width: 60px;
+    }
+    tr:hover
+    {
+      background:grey;
+    }
+    td.action{
+      display:flex;
+
+    }
+    td.action>*:not(:last-child){
+      margin-right:4px;
+    }
+    .buttons-in-menu
+    {
+      display:flex;
+      flex-direction:column;
+      padding:4px;
+    }
+    .buttons-in-menu>*:not(:last-child)
+    {
+      margin-bottom:4px;
+    }
+
+    </style>
+</head>
+<body>
+    <table class="table"  >
+        <thead>
+         <tr>
+          <th style="width: 150px;"></th>
+          <th>视频名称</th>
+          <th style="width: 120px;">播放次数</th>
+          <th style="width: 120px;">创建时间</th>
+          <th style="width: 150px;"></th>
+          <th style="width: 50px;"></th>
+         </tr>
+        </thead>
+        <tbody id="video-tbody">
+        <tr id="1000528">
+          <td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/60abf5d25285890804557767430/coverBySnapshot/1593175035_1982824913.100_0.jpg"></td>
+          <td class="video-title">m</td>
+          <td class="times">0</td>
+          <td>20-06-28</td>
+          <td class="action"></td>
+          
+        </tr>
+        <tr id="1000527"><td><img src="undefined"></td><td class="video-title">m</td><td class="times">0</td><td>70-01-01</td><td class="action"></td></tr><tr id="1000526"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/f6baaa795285890804488439906/coverBySnapshot/1593014768_274294369.100_0.jpg"></td><td class="video-title">m</td><td class="times">0</td><td>20-06-24</td><td class="action"></td></tr><tr id="1000522"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/08b6766c5285890804485122448/coverBySnapshot/1593014770_3610020375.100_0.jpg"></td><td class="video-title">m.mp4</td><td class="times">0</td><td>20-06-24</td><td class="action"></td></tr><tr id="1000511"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/c7c3dee05285890804484678948/coverBySnapshot/1593014768_2263295908.100_0.jpg"></td><td class="video-title">m.mp4</td><td class="times">0</td><td>20-06-24</td><td class="action"></td></tr><tr id="1000510"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/e32ad0bb5285890804481779638/coverBySnapshot/1593014773_3023750570.100_0.jpg"></td><td class="video-title">m.mp4</td><td class="times">0</td><td>20-06-24</td><td class="action"></td></tr><tr id="1000467"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/3ec89fa85285890802638608221/1590127650_3438246904.100_0.jpg"></td><td class="video-title">recording Fri May 22 2020, 02_29_04</td><td class="times">4</td><td>20-06-24</td><td class="action"></td></tr><tr id="1000372"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/7f9bd12a5285890800802089247/1586695609_4042933238.100_0.jpg"></td><td class="video-title">ThinkWise产品</td><td class="times">30</td><td>20-04-12</td><td class="action"></td></tr><tr id="1000371"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/7f991ba05285890800802084431/1586588442_2839370066.100_0.jpg"></td><td class="video-title">Vision accomplished. The new S-Class</td><td class="times">78</td><td>20-06-26</td><td class="action"></td></tr><tr id="1000369"><td><img src="http://1251142715.vod2.myqcloud.com/31e1a8aevodtranssh1251142715/7f2a4f1f5285890800802020278/1586514645_1897519791.100_0.jpg"></td><td class="video-title">BMW 5</td><td class="times">16</td><td>20-04-10</td><td class="action"></td></tr></tbody>
+       </table>
+
+       <script>
+       $(function(){
+
+        $("#video-tbody tr").each(function(){  
+  var id=$(this).attr('id');
+  console.log("id..mouse over."+id);
+  $(this ).find('.action').html('<span class="share btn btn-light">分享</span><span class="more btn btn-light">...</span>');
+  $(this ).find('.action>*').css("visibility","hidden");
+
+  $('.more').popover({
+    container: 'body',
+    placement:"bottom" ,
+    html:true,
+    content:`<div class="buttons-in-menu"><span class="share btn btn-light">button1</span><span class="more btn btn-light">button2</span></div>`
+  })
+
+    })
+
+ $("#video-tbody tr").on("mouseover" ,  function(){  
+  var id=$(this).attr('id');
+  console.log("id..mouse over."+id);
+  $(this ).find('.action>*').css("visibility","visible")
+    
+ })
+ 
+   $("#video-tbody tr").on("mouseout" ,  function(){ 
+    var id=$(this).attr('id');
+  console.log("id.mouse out.."+id);
+    $(this ).find('.action>*').css("visibility","hidden");
+    }) 
+})
+       </script>
+
+</body>
+</html>
